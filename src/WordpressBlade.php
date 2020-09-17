@@ -1,70 +1,91 @@
 <?php
 
-namespace StarringJane;
+namespace StarringJane\WordpressBlade;
 
 use Jenssegers\Blade\Blade;
-use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Facade;
+use StarringJane\WordpressBlade\Wordpress\Hooks;
+use Illuminate\Contracts\View\Factory as FactoryInterface;
+use Illuminate\Contracts\Foundation\Application as ApplicationInterface;
 
 class WordpressBlade extends Blade
 {
-    protected $views_path;
-
-    protected $cache_path;
-
-    protected $components_path;
-
+    /**
+     * @var Application
+     */
     protected $container;
 
-    public function __construct($views_path, $cache_path)
+    public function __construct($viewPath, string $cachePath, $componentPath = null)
     {
-        $this->views_path = $views_path;
-        $this->cache_path = $cache_path;
-        $this->container = Container::getInstance();
+        $this->container = Application::getInstance();
 
-        parent::__construct($views_path, $cache_path, $this->container);
+        parent::__construct($viewPath, $cachePath, $this->container);
+
+        if ($componentPath) {
+            $this->componentPath($componentPath);
+        }
+
+        Hooks::register();
     }
 
-    public static function register()
+    public static function create($viewPath, string $cachePath, $componentPath = null)
     {
-        $views_path = get_stylesheet_uri() . '/views';
-        $cache_path = get_stylesheet_uri() . '/views/cache';
-
-        return new self($views_path, $cache_path);
+        return new self($viewPath, $cachePath, $componentPath);
     }
 
-    public function views($path)
+    public static function getInstance()
     {
-        $this->views_path = $path;
+        return Application::getInstance()->get(WordpressBlade::class);
+    }
+
+    public function components(array $components, string $prefix = '')
+    {
+        $this->compiler()->components($components, $prefix);
 
         return $this;
     }
 
-    public function cache($path)
+    public function component(string $class, string $alias = null, string $prefix = '')
     {
-        $this->cache_path = $path;
+        $this->compiler()->component($class, $alias, $prefix);
 
         return $this;
     }
 
-    public function components($path)
+    protected function componentPath($componentPath)
     {
-        $this->components_path = $path;
+        foreach ((array)$componentPath as $path) {
+            if (!is_dir($path)) {
+                continue;
+            }
+
+            $this->components(
+                Utils::getComponentsFromPath($path)
+            );
+        }
 
         return $this;
     }
 
     protected function setupContainer(array $viewPaths, string $cachePath)
     {
-        $this->container->bindIf(
-            \Illuminate\Contracts\View\Factory::class,
-            function () {
-                return $this;
-            },
-            true
-        );
-
-        $this->container->bindIf('view', function () {
+        $this->container->bindIf(WordpressBlade::class, function () {
             return $this;
+        }, true);
+
+        $this->container->bindIf(FactoryInterface::class, function () {
+            return $this;
+        }, true);
+
+        $this->container->bindIf(ApplicationInterface::class, function ($app) {
+            return $app;
+        }, true);
+
+        $this->container->bindIf('config', function () use ($viewPaths, $cachePath) {
+            return collect([
+                'view.paths' => $viewPaths,
+                'view.compiled' => $cachePath,
+            ]);
         }, true);
 
         parent::setupContainer($viewPaths, $cachePath);

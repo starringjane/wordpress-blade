@@ -1,5 +1,5 @@
 {
-    "name": "starringjane/wordpress-blade",
+    "name": "starring-jane/wordpress-blade",
     "description": "A composer package that enables Wordpress to use the Blade templating engine",
     "type": "library",
     "license": "MIT",
@@ -14,7 +14,9 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "jenssegers/blade": "^1.3"
+        "jenssegers/blade": "^1.3",
+        "alex-oleshkevich/classnames": "^1.2",
+        "tightenco/collect": "^8.0"
     },
     "autoload": {
         "psr-4": {
