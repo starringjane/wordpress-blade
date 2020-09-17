@@ -5,8 +5,8 @@ namespace StarringJane\WordpressBlade;
 use Jenssegers\Blade\Blade;
 use Illuminate\Support\Facades\Facade;
 use StarringJane\WordpressBlade\Wordpress\Hooks;
-use Illuminate\Contracts\View\Factory as FactoryInterface;
-use Illuminate\Contracts\Foundation\Application as ApplicationInterface;
+use Illuminate\Contracts\View\Factory as ViewFactory;
+use Illuminate\Contracts\Foundation\Application as FoundationApplication;
 
 class WordpressBlade extends Blade
 {
@@ -73,11 +73,11 @@ class WordpressBlade extends Blade
             return $this;
         }, true);
 
-        $this->container->bindIf(FactoryInterface::class, function () {
+        $this->container->bindIf(ViewFactory::class, function () {
             return $this;
         }, true);
 
-        $this->container->bindIf(ApplicationInterface::class, function ($app) {
+        $this->container->bindIf(FoundationApplication::class, function ($app) {
             return $app;
         }, true);
 
