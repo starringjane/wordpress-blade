@@ -41,13 +41,7 @@ class Hooks
             return $template;
         }
 
-        try {
-            echo $component->render()->toHtml();
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException(
-                "{$e->getMessage()} File: {$component->resolveView()->getPath()}"
-            );
-        }
+        echo $component->toHtml();
     }
 
     /**

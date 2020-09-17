@@ -6,10 +6,21 @@ use Illuminate\View\Component as BaseComponent;
 
 abstract class Component extends BaseComponent
 {
-    protected function view($name, $data = [])
+    public function toHtml()
     {
-        $props = array_merge($data, $this->data());
+        try {
+            return $this->render()->toHtml();
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException(
+                "{$e->getMessage()} File: {$this->resolveView()->getPath()}"
+            );
+        }
+    }
 
-        return WordpressBlade::getInstance()->make($name, $props);
+    protected function view($view = null, $data = [], $mergeData = [])
+    {
+        $data = array_merge($data, $this->data());
+
+        return WordpressBlade::getInstance()->make($view, $data, $mergeData);
     }
 }
