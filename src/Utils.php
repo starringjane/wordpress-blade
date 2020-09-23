@@ -48,4 +48,23 @@ class Utils
 
         return [$name => $class];
     }
+
+    public static function createDirectory($path) {
+        if (!$path) {
+            return false;
+        }
+
+        if (is_array($path)) {
+            foreach ($path as $item) {
+                self::createDirectory($item);
+                return true;
+            }
+        }
+
+        if (file_exists($path)) {
+            return false;
+        }
+
+        return mkdir($path, 0777, true);
+    }
 }

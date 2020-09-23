@@ -17,6 +17,10 @@ class WordpressBlade extends Blade
 
     public function __construct($viewPath, string $cachePath, $componentPath = null)
     {
+        Utils::createDirectory($viewPath);
+        Utils::createDirectory($cachePath);
+        Utils::createDirectory($componentPath);
+
         $this->container = Application::getInstance();
 
         parent::__construct($viewPath, $cachePath, $this->container);
