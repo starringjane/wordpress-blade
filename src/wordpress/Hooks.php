@@ -57,10 +57,10 @@ class Hooks
     {
         array_map(function ($type) {
             add_filter("{$type}_template_hierarchy", function ($templates) {
-                foreach ($templates as $filename) {
-                    $directories = apply_filters('wordpress-blade-template-directories', ['templates']);
+                $directories = apply_filters('wordpress-blade/template-directories', ['templates']);
 
-                    foreach ($directories as $directory) {
+                foreach ($directories as $directory) {
+                    foreach ($templates as $filename) {
                         $templates[] = $directory . DIRECTORY_SEPARATOR . $filename;
                     }
                 }
