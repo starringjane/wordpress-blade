@@ -1,3 +1,5 @@
+![Starring Jane](http://www.starringjane.com/wp-content/themes/starring-jane/images/logo-black.png)
+
 # Wordpress blade
 
 Adds the Laravel blade template engine to wordpress
@@ -178,12 +180,7 @@ add_filter('wordpress-blade/template-directories', function ($directories) {
 });
 ```
 
-## Authors
+## Contributors
 
-Rens Bultynck
-Web developer at [Starring Jane](https://starringjane.com)
-[![Twitter Follow](https://img.shields.io/twitter/follow/RensBultynck.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/RensBultynck)
-
-Maxim Vanhove
-Web developer at [Starring Jane](https://starringjane.com)
-[![Twitter Follow](https://img.shields.io/twitter/follow/MrMaximVanhove.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/MrMaximVanhove)
+* Laurens Bultynck (laurens@starringjane.com) [![Twitter Follow](https://img.shields.io/twitter/follow/RensBultynck.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/RensBultynck)
+* Maxim Vanhove (maxim@starringjane.com) [![Twitter Follow](https://img.shields.io/twitter/follow/MrMaximVanhove.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/MrMaximVanhove)
