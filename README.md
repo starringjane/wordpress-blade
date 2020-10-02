@@ -172,7 +172,7 @@ class Button extends Component
 
 Add directories where wordpress should look for page templates, starting from the theme base
 
-```
+```php
 add_filter('wordpress-blade/template-directories', function ($directories) {
     $directories[] = 'controllers';
 
