@@ -34,7 +34,9 @@ class WordpressBlade extends Blade
 
     public static function create($viewPath, string $cachePath, $componentPath = null)
     {
-        return new self($viewPath, $cachePath, $componentPath);
+        return tap(new self($viewPath, $cachePath, $componentPath), function ($blade) {
+            $blade->compiler()->withoutDoubleEncoding();
+        });
     }
 
     public static function getInstance()
