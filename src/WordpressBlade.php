@@ -3,8 +3,6 @@
 namespace StarringJane\WordpressBlade;
 
 use Jenssegers\Blade\Blade;
-use Illuminate\Support\Facades\Facade;
-use StarringJane\WordpressBlade\Wordpress\Hooks;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\Foundation\Application as FoundationApplication;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace StarringJane\WordpressBlade\Wordpress;
+namespace StarringJane\WordpressBlade;
 
 use ClassNames\ClassNames;
 
