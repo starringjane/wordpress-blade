@@ -116,7 +116,7 @@ class Page extends Component
 Add your components to `views/components`
 
 ```php
-// views/components.button.blade.php
+// views/components/button.blade.php
 @props([
     'type' => 'default',
 ])
