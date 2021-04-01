@@ -59,14 +59,15 @@ class Hooks
             add_filter("{$type}_template_hierarchy", function ($templates) {
                 $directories = apply_filters('wordpress-blade/template-directories', ['templates']);
 
-                $directory_templates = [];
-                foreach ($directories as $directory) {
-                    foreach ($templates as $filename) {
-                        $directory_templates[] = $directory . DIRECTORY_SEPARATOR . $filename;
+                foreach ($templates as $key => $filename) {
+                    $templates[$key] = [$filename];
+
+                    foreach ($directories as $directory) {
+                        array_unshift($templates[$key], $directory . DIRECTORY_SEPARATOR . $filename);
                     }
                 }
 
-                return array_merge($directory_templates, $templates);
+                return array_flatten($templates);
             });
         }, [
             'index',
