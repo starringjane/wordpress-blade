@@ -34,9 +34,7 @@ class Utils
 
     public static function extractComponentFromFile($file, $base)
     {
-        $extractor = new \ClassNames\ClassNames;
-        $classes = $extractor->getClassNames($file);
-        $class = count($classes) ? $classes[0] : null;
+        $class = self::getClass($file);
         preg_match('/\/(.*).php/', str_replace($base, '', $file), $matches);
 
         if (!$class || count($matches) < 2) {
@@ -66,5 +64,15 @@ class Utils
         }
 
         return mkdir($path, 0777, true);
+    }
+
+    public static function getClass($path) {
+        $classes = get_declared_classes();
+
+        require_once $path;
+
+        $diff = array_diff(get_declared_classes(), $classes);
+
+        return reset($diff);
     }
 }

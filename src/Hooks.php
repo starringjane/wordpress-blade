@@ -2,8 +2,6 @@
 
 namespace StarringJane\WordpressBlade;
 
-use ClassNames\ClassNames;
-
 class Hooks
 {
     public function __construct()
@@ -32,9 +30,7 @@ class Hooks
      */
     public function action_template_include($template)
     {
-        $extractor = new ClassNames;
-        $classes = $extractor->getClassNames($template);
-        $class = count($classes) ? $classes[0] : null;
+        $class = Utils::getClass($template);
         $component = $class ? new $class : null;
 
         if (!$component || !method_exists($component, 'render')) {
