@@ -1,72 +1,31 @@
-![Starring Jane](http://www.starringjane.com/wp-content/themes/starring-jane/images/logo-black.png)
-
 # Wordpress blade
 
-Adds the Laravel blade template engine to wordpress
+Adds the Laravel Blade template engine to WordPress
 
-## Installation
+## Installation for WordPlate (skip for basic WordPress)
+
+Start with adding the composer package
 
 `composer require starring-jane/wordpress-blade`
 
-Create a WordpressBlade instance in `functions.php`
+Create a WordpressBlade instance in your theme `functions.php`
 
 ```php
 use StarringJane\WordpressBlade\WordpressBlade;
 
 WordpressBlade::create(
-    get_theme_file_path('views'), // Path to all blade files
-    get_theme_file_path('cache/views'), // Path to blade cache
-    get_theme_file_path('components') // Path to component classes (optional)
+    base_path('resources/views'), // Path to all blade files
+    base_path('storage/views/cache'), // Path to blade cache
+    base_path('public/themes/janes/components') // Path to component classes (optional, but recommended)
 );
 ```
 
-Autoload your theme namespace in `composer.json`
-
-```
-{
-    ...
-    "autoload": {
-        "psr-4": {
-            "ThemeName\\": "wp-content/themes/theme-name"
-        }
-    },
-    ...
-}
-```
-
-## Usage
-
-### Structure
-
-Basic wordpress
-
-```
-/wp-content/themes/theme-name
-├── /cache/views
-├── /components
-|   └── button.php
-├── /templates
-|   ├── 404.php
-|   ├── front-page.php
-|   ├── page.php
-|   └── single.php
-├── /views
-|   └── /components
-|   |   └── button.blade.php
-|   └── /pages
-|   |   └── page.blade.php
-|   └── index.blade.php
-└── functions.php
-└── index.php
-└── style.css
-```
-
-Wordplate setup
+Create the following structure
 
 ```
 /public
 ├── /themes
-|   └── /themes-name
+|   └── /theme-name
 |       ├── /components
 |       |   └── button.php
 |       ├── /templates
@@ -86,6 +45,63 @@ Wordplate setup
 |       └── index.blade.php
 └── /storage/cache/views
 ```
+
+## Installation for WordPress (skip for WordPlate)
+
+Start with adding the composer package
+
+`composer require starring-jane/wordpress-blade`
+
+Create a WordpressBlade instance in `functions.php`
+
+```php
+use StarringJane\WordpressBlade\WordpressBlade;
+
+WordpressBlade::create(
+    get_theme_file_path('views'), // Path to all blade files
+    get_theme_file_path('cache/views'), // Path to blade cache
+    get_theme_file_path('components') // Path to component classes (optional, but recommended)
+);
+```
+
+Autoload your theme namespace in `composer.json`
+
+```
+{
+    ...
+    "autoload": {
+        "psr-4": {
+            "ThemeName\\": "wp-content/themes/theme-name"
+        }
+    },
+    ...
+}
+```
+
+Create the following structure
+
+```
+/wp-content/themes/theme-name
+├── /cache/views
+├── /components
+|   └── button.php
+├── /templates
+|   ├── 404.php
+|   ├── front-page.php
+|   ├── page.php
+|   └── single.php
+├── /views
+|   └── /components
+|   |   └── button.blade.php
+|   └── /pages
+|   |   └── default.blade.php
+|   └── index.blade.php
+└── functions.php
+└── index.php
+└── style.css
+```
+
+## Templates
 
 Add a page template in the `/templates` directory with a component class and add at least a public render function
 
@@ -107,6 +123,17 @@ class Page extends Component
         ]);
     }
 }
+```
+
+Now you can access the `$post` variable in `views/pages/default.blade.php`
+
+```php
+@extends('layouts.main')
+
+@section('content')
+    <h1>{{ $post->post_title }}</h1>
+    <div>{!! $post->post_content !!}<div>
+@stop
 ```
 
 ## Components
