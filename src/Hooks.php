@@ -38,7 +38,13 @@ class Hooks
         }
 
         try {
-            echo $component->render()->toHtml();
+            $view = $component->render();
+
+            if (method_exists($view, 'toHtml')) {
+                echo $view->toHtml();
+            } else {
+                echo $view;
+            }
         } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException(
                 "{$e->getMessage()} File: {$component->resolveView()->getPath()}"

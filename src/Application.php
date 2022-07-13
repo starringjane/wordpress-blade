@@ -31,6 +31,11 @@ class Application extends Container implements ApplicationInterface {
         return '';
     }
 
+    public function environmentPath($path = '')
+    {
+        return '';
+    }
+
     public function resourcePath($path = '')
     {
         return '';
@@ -101,6 +106,46 @@ class Application extends Container implements ApplicationInterface {
         //
     }
 
+    public function configurationIsCached()
+    {
+        return false;
+    }
+
+    public function detectEnvironment($callback)
+    {
+        //
+    }
+
+    public function environmentFile()
+    {
+        //
+    }
+
+    public function environmentFilePath()
+    {
+        //
+    }
+
+    public function getCachedConfigPath()
+    {
+        //
+    }
+
+    public function getCachedServicesPath()
+    {
+        //
+    }
+
+    public function getCachedPackagesPath()
+    {
+        //
+    }
+
+    public function getCachedRoutesPath()
+    {
+        //
+    }
+
     public function getLocale()
     {
         return '';
@@ -122,6 +167,16 @@ class Application extends Container implements ApplicationInterface {
     }
 
     public function loadDeferredProviders()
+    {
+        //
+    }
+
+    public function loadEnvironmentFrom($file)
+    {
+        //
+    }
+
+    public function routesAreCached()
     {
         //
     }

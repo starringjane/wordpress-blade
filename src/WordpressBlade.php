@@ -44,7 +44,12 @@ class WordpressBlade extends Blade
 
     public function components(array $components, string $prefix = '')
     {
-        $this->compiler()->components($components, $prefix);
+        $compiler = $this->compiler();
+
+        // Only supported in illuminate/view 7 or higher
+        if (method_exists($compiler, 'components')) {
+            $compiler->components($components, $prefix);
+        }
 
         return $this;
     }
