@@ -207,6 +207,10 @@ add_filter('wordpress-blade/template-directories', function ($directories) {
 });
 ```
 
+## Migrating from bladerunner
+
+Follow [this guide](https://github.com/starringjane/wordpress-blade/blob/master/docs/bladerunner.md) to migrate from [bladerunner](https://github.com/ekandreas/bladerunner)
+
 ## Contributors
 
 * Laurens Bultynck (laurens@starringjane.com) [![Twitter Follow](https://img.shields.io/twitter/follow/RensBultynck.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/RensBultynck)
