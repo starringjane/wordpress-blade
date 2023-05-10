@@ -15,7 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "jenssegers/blade": "^1.3",
-        "tightenco/collect": "^8.0"
+        "tightenco/collect": ">=8.0"
     },
     "autoload": {
         "psr-4": {
