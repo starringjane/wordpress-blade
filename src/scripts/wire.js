@@ -131,7 +131,16 @@ class Livewire {
         document.addEventListener('alpine:init', () => {
             this.registerWireDirective();
             this.registerWireMacicProperty();
+            this.validate();
         });
+    }
+
+    validate () {
+        setTimeout(() => {
+            if (!window.Alpine.morph) {
+                console.error('Plugin "morph" is not included. Find out more here: https://alpinejs.dev/plugins/morph');
+            }
+        }, 1);
     }
 
     registerWireDirective () {
