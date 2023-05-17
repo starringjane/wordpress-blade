@@ -183,12 +183,14 @@ var Livewire = /*#__PURE__*/function () {
         var id = el.getAttribute('x-wire');
         if (components.has(id)) {
           components.get(id).updateData();
-
-          // Try a second time, because sometimes the directive was not loaded yet
-          setTimeout(function () {
-            components.get(id).updateData();
-          }, 10);
         }
+
+        // Try a second time, because sometimes the directive was not loaded yet
+        setTimeout(function () {
+          if (components.has(id)) {
+            components.get(id).updateData();
+          }
+        }, 10);
       });
     }
   }, {
