@@ -29,10 +29,23 @@ abstract class LivewireComponent extends Component
     {
     }
 
-    public function refresh()
+    /**
+     * Add refresh function just to update the view from $wire
+     * @click="$wire.$refresh()"
+     */
+    public function dollarRefresh()
     {
-        // Add refresh function just to update the view from $wire
-        // @click="$wire.refresh()"
+    }
+
+    /**
+     * Set any public property
+     * @click="$wire.$set('prop', 'value')"
+     */
+    public function dollarSet(string $property, mixed $value)
+    {
+        if (property_exists($this, $property)) {
+            $this->{$property} = $value;
+        }
     }
 
     public function wireHydrateQueryArguments()
@@ -87,11 +100,11 @@ abstract class LivewireComponent extends Component
             }
 
             foreach ($this->extractWireProperties() as $property => $value) {
-                if (isset($request['serverMemo']['data'][$property])) {
-                    $this->{$property} = Utils::castToType(gettype($this->{$property}), $request['serverMemo']['data'][$property]);
+                if (isset($request['serverMemo']['serialized'][$property])) {
+                    $this->{$property} = unserialize($request['serverMemo']['serialized'][$property]);
                 }
             }
-    
+
             if (isset($request['call']['method']) && isset($request['call']['arguments'])) {
                 $method = $request['call']['method'];
                 $arguments = $request['call']['arguments'];
@@ -100,6 +113,17 @@ abstract class LivewireComponent extends Component
             }
         } catch (Throwable $e) {
             $this->wireErrors[] = $e->getMessage();
+        }
+    }
+
+    public function fill($data = null)
+    {
+        if ($data) {
+            foreach ($data as $property => $value) {
+                if (property_exists($this, $property)) {
+                    $this->{$property} = $value;
+                }
+            }
         }
     }
 
@@ -114,22 +138,6 @@ abstract class LivewireComponent extends Component
             'html' => $this->toHtml(),
             'path' => LivewirePath::getInstance()->getPath(),
         ];
-    }
-
-    /**
-     * Using this function to call "mount" only once
-     * withName is only called in the initial request
-     */
-    public function withName($name)
-    {
-        $this->mount();
-        $this->boot();
-        $this->wireHydrateQueryArguments();
-        $this->mounted();
-        $this->booted();
-        $this->wireDehydrateQueryArguments();
-
-        return parent::withName($name);
     }
 
     public function withAttributes(array $attributes)
@@ -170,6 +178,7 @@ abstract class LivewireComponent extends Component
             'serverMemo' => [
                 'errors' => $this->getWireErrors(),
                 'data' => $this->extractWireProperties(),
+                'serialized' => $this->extractSerializedWireProperties(),
             ],
         ]);
     }
@@ -182,6 +191,17 @@ abstract class LivewireComponent extends Component
         unset($properties['attributes']);
 
         return $properties;
+    }
+
+    protected function extractSerializedWireProperties()
+    {
+        $props = $this->extractWireProperties();
+
+        foreach ($props as $key => $value) {
+            $props[$key] = serialize($value);
+        }
+
+        return $props;
     }
 
     protected function view($view = null, $data = [], $mergeData = [])

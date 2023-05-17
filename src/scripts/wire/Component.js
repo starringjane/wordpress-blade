@@ -106,6 +106,18 @@ export class Component {
             return this.getPropertyValue(prop);
         }
 
+        // $refresh method call
+        // Example: @click="$wire.$refresh()"
+        if (prop === '$refresh') {
+            return this.call('dollarRefresh');
+        }
+
+        // $set method call
+        // Example: @click="$wire.$set('prop', 'value')"
+        if (prop === '$set') {
+            return this.call('dollarSet');
+        }
+
         // Asume method call
         // Example: @click="$wire.increaseCounter()"
         return this.call(prop);

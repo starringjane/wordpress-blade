@@ -134,6 +134,18 @@ var Component = /*#__PURE__*/function () {
         return this.getPropertyValue(prop);
       }
 
+      // $refresh method call
+      // Example: @click="$wire.$refresh()"
+      if (prop === '$refresh') {
+        return this.call('dollarRefresh');
+      }
+
+      // $set method call
+      // Example: @click="$wire.$set('prop', 'value')"
+      if (prop === '$set') {
+        return this.call('dollarSet');
+      }
+
       // Asume method call
       // Example: @click="$wire.increaseCounter()"
       return this.call(prop);
@@ -164,10 +176,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Livewire": () => (/* binding */ Livewire)
 /* harmony export */ });
 /* harmony import */ var _Component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Component.js */ "./src/scripts/wire/Component.js");
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils.js */ "./src/scripts/wire/utils.js");
+/* harmony import */ var _OptionalProxy_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OptionalProxy.js */ "./src/scripts/wire/OptionalProxy.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils.js */ "./src/scripts/wire/utils.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
 
 
 var Livewire = /*#__PURE__*/function () {
@@ -177,18 +191,27 @@ var Livewire = /*#__PURE__*/function () {
     this.components = new Map();
     this.forceDataDirectiveToBody();
     this.updatePath();
-    document.addEventListener('alpine:init', function () {
-      _this.registerWireDirective();
-      _this.registerWireDataDirective();
-      _this.registerWireMacicProperty();
-      _this.validate();
-    });
+    if (window.Alpine) {
+      this.register();
+    } else {
+      document.addEventListener('alpine:init', function () {
+        _this.register();
+      });
+    }
   }
   _createClass(Livewire, [{
+    key: "register",
+    value: function register() {
+      this.registerWireDirective();
+      this.registerWireDataDirective();
+      this.registerWireMacicProperty();
+      this.validate();
+    }
+  }, {
     key: "updatePath",
     value: function updatePath() {
       if (window.LIVEWIRE_PATH) {
-        (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.updatePathFromUrl)(window.LIVEWIRE_PATH);
+        (0,_utils_js__WEBPACK_IMPORTED_MODULE_2__.updatePathFromUrl)(window.LIVEWIRE_PATH);
       }
     }
   }, {
@@ -201,15 +224,20 @@ var Livewire = /*#__PURE__*/function () {
       }, 1);
     }
   }, {
+    key: "createComponent",
+    value: function createComponent(id, el) {
+      if (!this.components.has(id)) {
+        this.components.set(id, new _Component_js__WEBPACK_IMPORTED_MODULE_0__.Component(el));
+      }
+    }
+  }, {
     key: "registerWireDirective",
     value: function registerWireDirective() {
       var _this2 = this;
       window.Alpine.directive('wire', function (el, _ref) {
         var expression = _ref.expression;
         var id = expression;
-        if (!_this2.components.has(id)) {
-          _this2.components.set(id, new _Component_js__WEBPACK_IMPORTED_MODULE_0__.Component(el));
-        }
+        _this2.createComponent(id, el);
       });
     }
   }, {
@@ -219,9 +247,10 @@ var Livewire = /*#__PURE__*/function () {
       window.Alpine.directive('wire-data', function (el) {
         var updateData = function updateData() {
           var id = el.getAttribute('x-wire');
-          if (_this3.components.has(id)) {
-            _this3.components.get(id).updateData();
+          if (!_this3.components.has(id)) {
+            _this3.createComponent(id, el);
           }
+          _this3.components.get(id).updateData();
         };
         updateData();
 
@@ -236,19 +265,22 @@ var Livewire = /*#__PURE__*/function () {
     value: function registerWireMacicProperty() {
       var _this4 = this;
       window.Alpine.magic('wire', function (el) {
+        if (el.__$wire) {
+          return el.__$wire;
+        }
         var wireEl = el.closest('[x-wire]');
-        var id = wireEl.getAttribute('x-wire');
         if (!wireEl) {
           console.error('Alpine: Cannot reference "$wire" outside a Livewire component.');
-          return null;
+          return _OptionalProxy_js__WEBPACK_IMPORTED_MODULE_1__.OptionalProxy;
         }
         ;
+        var id = wireEl.getAttribute('x-wire');
         if (!_this4.components.has(id)) {
           console.error("Alpine: Cannot reference \"$wire\" for Livewire component with id ".concat(id, "."));
-          return null;
+          return _OptionalProxy_js__WEBPACK_IMPORTED_MODULE_1__.OptionalProxy;
         }
         ;
-        return _this4.components.get(id).$wire;
+        return el.__$wire = _this4.components.get(id).$wire;
       });
     }
   }, {
@@ -273,6 +305,26 @@ var Livewire = /*#__PURE__*/function () {
   }]);
   return Livewire;
 }();
+
+/***/ }),
+
+/***/ "./src/scripts/wire/OptionalProxy.js":
+/*!*******************************************!*\
+  !*** ./src/scripts/wire/OptionalProxy.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "OptionalProxy": () => (/* binding */ OptionalProxy)
+/* harmony export */ });
+var OptionalProxy = new Proxy({}, {
+  get: function get() {
+    return function () {
+      return OptionalProxy;
+    };
+  }
+});
 
 /***/ }),
 

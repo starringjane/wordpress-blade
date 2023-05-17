@@ -1,4 +1,5 @@
 import { Component } from "./Component.js";
+import { OptionalProxy } from "./OptionalProxy.js";
 import { updatePathFromUrl } from "./utils.js";
 
 export class Livewire {
@@ -20,6 +21,13 @@ export class Livewire {
         return new Livewire();
     }
 
+    register () {
+        this.registerWireDirective();
+        this.registerWireDataDirective();
+        this.registerWireMacicProperty();
+        this.validate();
+    }
+
     updatePath () {
         if (window.LIVEWIRE_PATH) {
             updatePathFromUrl(window.LIVEWIRE_PATH);
@@ -34,13 +42,16 @@ export class Livewire {
         }, 1);
     }
 
+    createComponent(id, el) {
+        if (!this.components.has(id)) {
+            this.components.set(id, new Component(el));
+        }
+    }
+
     registerWireDirective () {
         window.Alpine.directive('wire', (el, { expression }) => {
             const id = expression;
-
-            if (!this.components.has(id)) {
-                this.components.set(id, new Component(el));
-            }
+            this.createComponent(id, el);
         });
     }
 
@@ -48,10 +59,12 @@ export class Livewire {
         window.Alpine.directive('wire-data', (el) => {
             const updateData = () => {
                 const id = el.getAttribute('x-wire');
-    
-                if (this.components.has(id)) {
-                    this.components.get(id).updateData();
+
+                if (!this.components.has(id)) {
+                    this.createComponent(id, el);
                 }
+
+                this.components.get(id).updateData();
             }
 
             updateData();
@@ -65,20 +78,25 @@ export class Livewire {
 
     registerWireMacicProperty () {
         window.Alpine.magic('wire', (el) => {
+            if (el.__$wire) {
+                return el.__$wire;
+            }
+
             const wireEl = el.closest('[x-wire]');
-            const id = wireEl.getAttribute('x-wire');
     
             if (!wireEl) {
                 console.error('Alpine: Cannot reference "$wire" outside a Livewire component.');
-                return null;
+                return OptionalProxy;
             };
+
+            const id = wireEl.getAttribute('x-wire');
     
             if (!this.components.has(id)) {
                 console.error(`Alpine: Cannot reference "$wire" for Livewire component with id ${id}.`);
-                return null;
+                return OptionalProxy;
             };
-    
-            return this.components.get(id).$wire;
+
+            return el.__$wire = this.components.get(id).$wire;
         });
     }
 

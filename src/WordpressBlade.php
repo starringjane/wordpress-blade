@@ -62,6 +62,16 @@ class WordpressBlade extends Blade
         return $this;
     }
 
+    public function getComponents()
+    {
+        return $this->compiler()->getClassComponentAliases();
+    }
+
+    public function getComponent($name)
+    {
+        return collect($this->getComponents())->get($name);
+    }
+
     protected function componentPath($componentPath)
     {
         foreach ((array)$componentPath as $path) {
