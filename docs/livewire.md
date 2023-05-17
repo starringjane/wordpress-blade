@@ -2,6 +2,8 @@
 
 ## Setup
 
+### Alpine Morph plugin
+
 Include the Alpine Morph plugin. More information can be found here: https://alpinejs.dev/plugins/morph
 
 In WordPress you can add enqueue the CDN version
@@ -9,6 +11,27 @@ In WordPress you can add enqueue the CDN version
 ```php
 wp_enqueue_script('alpine-morph', 'https://unpkg.com/@alpinejs/morph@3.x.x/dist/cdn.min.js');
 wp_enqueue_script('alpine', 'https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js');
+```
+
+### Register the package
+
+```php
+use StarringJane\WordpressBlade\Livewire;
+use StarringJane\WordpressBlade\WordpressBlade;
+
+/**
+ * WordpressBlade
+ */
+WordpressBlade::create(
+    base_path('resources/views'), // Path to all blade files
+    base_path('storage/views/cache'), // Path to blade cache
+    base_path('public/themes/janes/components') // Path to component classes (required for Livewire!)
+);
+
+/**
+ * Livewire
+ */
+Livewire::create();
 ```
 
 ## Usage

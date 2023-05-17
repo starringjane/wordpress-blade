@@ -10,7 +10,7 @@ class Livewire
         LivewireRestApi::register();
     }
 
-    public static function register()
+    public static function create()
     {
         return new self;
     }

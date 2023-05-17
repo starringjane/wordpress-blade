@@ -29,7 +29,6 @@ class WordpressBlade extends Blade
         }
 
         Hooks::register();
-        Livewire::register();
     }
 
     public static function create($viewPath, string $cachePath, $componentPath = null)
