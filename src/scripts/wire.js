@@ -29,8 +29,15 @@ class Component {
     }
 
     updateData () {
+        this.data = this.data || window.Alpine.reactive({});
+
         if (this.el.getAttribute('wire:data')) {
-            this.data = JSON.parse(this.el.getAttribute('wire:data'));
+            const data = JSON.parse(this.el.getAttribute('wire:data'));
+
+            Object.entries(data).forEach(([key, value]) => {
+                this.data[key] = value;
+            });
+
             this.el.removeAttribute('wire:data');
         }
     }
@@ -49,24 +56,24 @@ class Component {
         });
     }
 
-    get (prop) {
+    hasPropertyValue (prop) {
+        return prop in this.data.serverMemo.data;
+    }
+
+    getPropertyValue (prop) {
+        return this.data.serverMemo.data[prop];
+    }
+
+    call (method) {
         const $el = this.el;
         const $data = this.data;
 
-        // Check of public property exists
-        // Example: x-text="$wire.count"
-        if (prop in $data.serverMemo.data) {
-            return $data.serverMemo.data[prop];
-        }
-
-        // Asume method call
-        // Example: @click="$wire.increaseCounter()"
         return function () {
             const payload = {
                 fingerprint: $data.fingerprint,
                 serverMemo: $data.serverMemo,
                 call: {
-                    method: prop,
+                    method: method,
                     arguments: [...arguments],
                 },
             };
@@ -84,6 +91,18 @@ class Component {
                 })
             ;
         };
+    }
+
+    get (prop) {
+        // Check of public property exists
+        // Example: x-text="$wire.count"
+        if (this.hasPropertyValue(prop)) {
+            return this.getPropertyValue(prop);
+        }
+
+        // Asume method call
+        // Example: @click="$wire.increaseCounter()"
+        return this.call(prop);
     }
 
     set (prop, value) {
