@@ -29,9 +29,7 @@ class Livewire
                 'methods' => 'POST',
                 'callback' => function () {
                     $request = isset($_POST['json']) ? json_decode(str_replace('\"', '"', $_POST['json'])) : null;
-        
-                    $classIdMap = get_transient('wire_components');
-                    $class = $classIdMap[$request->fingerprint->id];
+                    $class = str_replace('\\\\', '\\', $request->fingerprint->class);
         
                     $component = new $class($request);
         

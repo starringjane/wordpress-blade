@@ -2,7 +2,6 @@ const components = new Map();
 
 class Component {
     constructor (el) {
-        el.__livewire = this;
         this.el = el;
 
         this.updateId();
@@ -10,6 +9,9 @@ class Component {
         this.observe();
     }
 
+    /**
+     * Updates the inital data when el changes
+     */
     observe () {
         this.observer = new MutationObserver((mutationList, observer) => {
             for (const mutation of mutationList) {
@@ -53,28 +55,26 @@ class Component {
 
         // Check of public property exists
         // Example: x-text="$wire.count"
-        if (prop in $data.properties) {
-            return $data.properties[prop];
+        if (prop in $data.serverMemo.data) {
+            return $data.serverMemo.data[prop];
         }
 
         // Asume method call
         // Example: @click="$wire.increaseCounter()"
         return function () {
-            const data = {
-                fingerprint: {
-                    id: this.id,
-                },
+            const payload = {
+                fingerprint: $data.fingerprint,
+                serverMemo: $data.serverMemo,
                 call: {
                     method: prop,
                     arguments: [...arguments],
                 },
-                serverMemo: $data,
             };
 
             fetch('/wp-json/wire/v1/wire', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'json=' + encodeURI(JSON.stringify(data)),
+                body: 'json=' + encodeURI(JSON.stringify(payload)),
             })
                 .then((response) => response.json())
                 .then(function (response) {
@@ -87,8 +87,8 @@ class Component {
     }
 
     set (prop, value) {
-        if (prop in this.data.properties) {
-            this.data.properties[prop] = value;
+        if (prop in this.data.serverMemo.data) {
+            this.data.serverMemo.data[prop] = value;
         }
 
         return true;

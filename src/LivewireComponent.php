@@ -41,8 +41,8 @@ abstract class LivewireComponent extends Component
 
     public function handleWireRequest($request)
     {
-        if (isset($request->serverMemo->properties)) {
-            foreach ($request->serverMemo->properties as $key => $value) {
+        if (isset($request->serverMemo->data)) {
+            foreach ($request->serverMemo->data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
@@ -72,29 +72,19 @@ abstract class LivewireComponent extends Component
             return $this->id;
         }
 
-        $this->id = uniqid();
-
-        $class = get_class($this);
-        $classIdMapKey = 'wire_components';
-        $classIdMap = get_transient($classIdMapKey);
-
-        if (empty($classIdMap)) {
-            $classIdMap = [];
-        }
-
-        $this->id = uniqid();
-
-        $classIdMap[$this->id] = $class;
-
-        set_transient($classIdMapKey, $classIdMap);
-
-        return $this->id;
+        return $this->id = Utils::randomString(40);
     }
 
     protected function getWireData()
     {
         return json_encode([
-            'properties' => $this->extractWireProperties(),
+            'fingerprint' => [
+                'id' => $this->id,
+                'class' => get_class($this),
+            ],
+            'serverMemo' => [
+                'data' => $this->extractWireProperties(),
+            ],
         ]);
     }
 
