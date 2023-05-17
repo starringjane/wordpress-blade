@@ -6,7 +6,7 @@
 
 Include the Alpine Morph plugin. More information can be found here: https://alpinejs.dev/plugins/morph
 
-In WordPress you can add enqueue the CDN version
+In WordPress you can enqueue the CDN version
 
 ```php
 wp_enqueue_script('alpine-morph', 'https://unpkg.com/@alpinejs/morph@3.x.x/dist/cdn.min.js');
