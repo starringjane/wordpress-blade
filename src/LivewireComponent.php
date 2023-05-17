@@ -41,13 +41,15 @@ abstract class LivewireComponent extends Component
             return;
         }
 
+        $queryArguments = LivewirePath::getInstance()->getQueryArguments();
+
         foreach ($this->queryString as $key => $value) {
             $property = is_string($value) ? $value : $key;
             $options = is_array($value) ? $value : [];
             $queryKey = isset($options['as']) ? $options['as'] : $property;
 
-            if (isset($_GET[$queryKey]) && property_exists($this, $property)) {
-                $this->{$property} = Utils::castToType(gettype($this->{$property}), $_GET[$queryKey]);
+            if (isset($queryArguments[$queryKey]) && property_exists($this, $property)) {
+                $this->{$property} = Utils::castToType(gettype($this->{$property}), $queryArguments[$queryKey]);
             }
         }
     }
@@ -58,8 +60,6 @@ abstract class LivewireComponent extends Component
             return;
         }
 
-        $path = LivewirePath::getInstance()->getPath();
-
         foreach ($this->queryString as $key => $value) {
             $property = is_string($value) ? $value : $key;
             $options = is_array($value) ? $value : [];
@@ -67,14 +67,12 @@ abstract class LivewireComponent extends Component
 
             if (property_exists($this, $property)) {
                 if (isset($options['except']) && $this->{$property} == $options['except']) {
-                    $path = remove_query_arg($queryKey, $path);
+                    LivewirePath::getInstance()->removeQueryArg($queryKey);
                 } else {
-                    $path = add_query_arg($queryKey, $this->{$property}, $path);
+                    LivewirePath::getInstance()->addQueryArg($queryKey, $this->{$property});
                 }
             }
         }
-
-        LivewirePath::getInstance()->setPath($path);
     }
 
     public function handleWireRequest($request)
