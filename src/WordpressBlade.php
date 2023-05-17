@@ -25,6 +25,7 @@ class WordpressBlade extends Blade
 
         if ($componentPath) {
             $this->componentPath($componentPath);
+            $this->clearCacheOnComponentChange($componentPath, $cachePath);
         }
 
         Hooks::register();
@@ -98,5 +99,38 @@ class WordpressBlade extends Blade
         }, true);
 
         parent::setupContainer($viewPaths, $cachePath);
+    }
+
+    protected function clearCacheOnComponentChange($componentPath, $cachePath)
+    {
+        $tmpPath = realpath(__DIR__ . '/../tmp');
+        $componentHashFile = $tmpPath . '/components.txt';
+
+        Utils::createDirectory($tmpPath);
+
+        $hash = collect((array) $componentPath)->map(function ($path) {
+            return Utils::scanDirectoryRecursive($path)->map(function ($file) {
+                return $file . ':' . filemtime($file);
+            });
+        })->flatten()->join('|');
+
+        $oldHash = file_exists($componentHashFile)
+            ? file_get_contents($componentHashFile)
+            : null;
+
+        if ($hash !== $oldHash) {
+            $this->clearCache($cachePath);
+        }
+
+        file_put_contents($componentHashFile, $hash);
+    }
+
+    protected function clearCache($cachePath)
+    {
+        Utils::scanDirectoryRecursive($cachePath)->each(function ($file) {
+            if (str_ends_with($file, '.php')) {
+                unlink($file);
+            }
+        });
     }
 }
