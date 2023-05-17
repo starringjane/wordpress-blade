@@ -29,17 +29,27 @@ class Component {
     }
 
     updateData () {
+        if (!this.el.getAttribute('wire:data')) {
+            return;
+        }
+
         this.data = this.data || window.Alpine.reactive({});
 
-        if (this.el.getAttribute('wire:data')) {
-            const data = JSON.parse(this.el.getAttribute('wire:data'));
+        const data = JSON.parse(this.el.getAttribute('wire:data'));
 
-            Object.entries(data).forEach(([key, value]) => {
-                this.data[key] = value;
-            });
+        Object.entries(data).forEach(([key, value]) => {
+            this.data[key] = value;
+        });
 
-            this.el.removeAttribute('wire:data');
-        }
+        this.el.removeAttribute('wire:data');
+
+        this.logErrors();
+    }
+
+    logErrors () {
+        this.data.serverMemo.errors.forEach(error => {
+            console.error(error);
+        });
     }
 
     get $wire () {

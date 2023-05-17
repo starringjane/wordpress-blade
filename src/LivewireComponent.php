@@ -3,10 +3,13 @@
 namespace StarringJane\WordpressBlade;
 
 use StarringJane\WordpressBlade\Component;
+use Throwable;
 
 abstract class LivewireComponent extends Component
 {
     public $id = false;
+
+    private $__wireErrors = [];
 
     public function mount()
     {
@@ -22,19 +25,21 @@ abstract class LivewireComponent extends Component
 
     public function handleWireRequest($request)
     {
-        foreach ($this->extractWireProperties() as $property => $value) {
-            if (isset($request['serverMemo']['data'][$property])) {
-                $this->{$property} = $request['serverMemo']['data'][$property];
+        try {
+            foreach ($this->extractWireProperties() as $property => $value) {
+                if (isset($request['serverMemo']['data'][$property])) {
+                    $this->{$property} = $request['serverMemo']['data'][$property];
+                }
             }
-        }
-
-        if (isset($request['call']['method']) && isset($request['call']['arguments'])) {
-            $method = $request['call']['method'];
-            $arguments = $request['call']['arguments'];
-
-            if (method_exists($this, $method)) {
+    
+            if (isset($request['call']['method']) && isset($request['call']['arguments'])) {
+                $method = $request['call']['method'];
+                $arguments = $request['call']['arguments'];
+    
                 $this->{$method}(...$arguments);
             }
+        } catch (Throwable $e) {
+            $this->__wireErrors[] = $e->getMessage();
         }
     }
 
@@ -69,6 +74,11 @@ abstract class LivewireComponent extends Component
         return $this->id = Utils::randomString(40);
     }
 
+    protected function getWireErrors()
+    {
+        return $this->__wireErrors;
+    }
+
     protected function getWireData()
     {
         return json_encode([
@@ -77,6 +87,7 @@ abstract class LivewireComponent extends Component
                 'class' => get_class($this),
             ],
             'serverMemo' => [
+                'errors' => $this->getWireErrors(),
                 'data' => $this->extractWireProperties(),
             ],
         ]);
