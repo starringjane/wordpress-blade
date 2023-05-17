@@ -7,12 +7,13 @@ export class Livewire {
         this.forceDataDirectiveToBody();
         this.updatePath();
 
-        document.addEventListener('alpine:init', () => {
-            this.registerWireDirective();
-            this.registerWireDataDirective();
-            this.registerWireMacicProperty();
-            this.validate();
-        });
+        if (window.Alpine) {
+            this.register();   
+        } else {
+            document.addEventListener('alpine:init', () => {
+                this.register();
+            });
+        }
     }
 
     static create () {
