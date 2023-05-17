@@ -1,0 +1,25 @@
+{
+  "name": "wordpress-blade",
+  "version": "1.0.0",
+  "description": "Adds the Laravel Blade template engine to WordPress",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "watch": "mix watch",
+    "production": "mix --production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starringjane/wordpress-blade.git"
+  },
+  "author": "Maxim Vanhove",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/starringjane/wordpress-blade/issues"
+  },
+  "homepage": "https://github.com/starringjane/wordpress-blade#readme",
+  "dependencies": {
+    "laravel-mix": "^6.0.49"
+  }
+}

@@ -22,6 +22,6 @@ class LivewireAssets
 
     public function addWireScript()
     {
-        echo "<script>".file_get_contents(__DIR__ . '/scripts/wire.js')."</script>";
+        echo "<script>".file_get_contents(__DIR__ . '/dist/wire.js')."</script>";
     }
 }
