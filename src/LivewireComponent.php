@@ -22,13 +22,13 @@ abstract class LivewireComponent extends Component
 
     public function handleWireRequest($request)
     {
-        if (isset($request['serverMemo']['data'])) {
-            foreach ($request['serverMemo']['data'] as $property => $value) {
-                $this->{$property} = $value;
+        foreach ($this->extractWireProperties() as $property => $value) {
+            if (isset($request['serverMemo']['data'][$property])) {
+                $this->{$property} = $request['serverMemo']['data'][$property];
             }
         }
 
-        if (isset($request['call'])) {
+        if (isset($request['call']['method']) && isset($request['call']['arguments'])) {
             $method = $request['call']['method'];
             $arguments = $request['call']['arguments'];
 
@@ -73,7 +73,7 @@ abstract class LivewireComponent extends Component
     {
         return json_encode([
             'fingerprint' => [
-                'id' => $this->id,
+                'id' => $this->getWireId(),
                 'class' => get_class($this),
             ],
             'serverMemo' => [
