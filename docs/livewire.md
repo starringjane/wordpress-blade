@@ -16,7 +16,8 @@ wp_enqueue_script('alpine', 'https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js');
 ### Add a component class
 
 ```php
-// themes/theme-name/components/MyLivewireComponent.php
+// themes/theme-name/components/my-livewire-component.php
+
 <?php
 
 namespace ThemeName\Components;
@@ -39,6 +40,7 @@ class MyLivewireComponent extends LivewireComponent
 
 ```php
 // views/components/my-livewire-component.blade.php
+
 <div {{ $attributes }}>
     <div x-data>
         <div>Count: {{ $count }}</div>
@@ -63,7 +65,8 @@ You should see a component with "Count: 0"
 ## Calling component functions
 
 ```php
-// themes/theme-name/components/MyLivewireComponent.php
+// themes/theme-name/components/my-livewire-component.php
+
 <?php
 
 namespace ThemeName\Components;
@@ -89,6 +92,7 @@ class MyLivewireComponent extends LivewireComponent
 
 ```php
 // views/components/my-livewire-component.blade.php
+
 <div {{ $attributes }}>
     <div x-data>
         <div>Count: {{ $count }}</div>
@@ -111,7 +115,8 @@ Only use public properties if you want to change or access it with the $wire att
 Public properties do not need to be added to the data of the render function
 
 ```php
-// themes/theme-name/components/MyLivewireComponent.php
+// themes/theme-name/components/my-livewire-component.php
+
 <?php
 
 namespace ThemeName\Components;
@@ -143,6 +148,7 @@ class MyLivewireComponent extends LivewireComponent
 
 ```php
 // views/components/my-livewire-component.blade.php
+
 <div {{ $attributes }}>
     <div x-data>
         <x-posts-list :posts="$posts" />
@@ -166,7 +172,8 @@ class MyLivewireComponent extends LivewireComponent
 ```
 
 ```php
-// themes/theme-name/components/MyLivewireComponent.php
+// themes/theme-name/components/my-livewire-component.php
+
 <?php
 
 namespace ThemeName\Components;
@@ -192,6 +199,7 @@ class MyLivewireComponent extends LivewireComponent
 
 ```php
 // views/components/my-livewire-component.blade.php
+
 <div {{ $attributes }}>
     <div x-data>
         Current post type: {{ $postType }}
@@ -202,7 +210,8 @@ class MyLivewireComponent extends LivewireComponent
 ## Lifecycle
 
 ```php
-// themes/theme-name/components/MyLivewireComponent.php
+// themes/theme-name/components/my-livewire-component.php
+
 <?php
 
 namespace ThemeName\Components;
