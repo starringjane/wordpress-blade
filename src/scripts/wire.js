@@ -97,8 +97,12 @@ class Component {
 
 class Livewire {
     constructor () {
-        this.registerWireDirective();
-        this.registerWireMacicProperty();
+        this.forceDataDirectiveToBody();
+
+        document.addEventListener('alpine:init', () => {
+            this.registerWireDirective();
+            this.registerWireMacicProperty();
+        });
     }
 
     registerWireDirective () {
@@ -129,8 +133,20 @@ class Livewire {
             return components.get(id).$wire;
         });
     }
+
+    forceDataDirectiveToBody () {
+        if (!document.body) {
+            setTimeout(() => {
+                this.forceDataDirectiveToBody();
+            });
+
+            return;
+        }
+
+        if (!document.body.hasAttribute('x-data')) {
+            document.body.setAttribute('x-data', '');
+        }
+    }
 }
 
-document.addEventListener('alpine:init', () => {
-    window.__livewire = new Livewire();
-});
+new Livewire();
