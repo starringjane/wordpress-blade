@@ -30,22 +30,12 @@ class Component {
     }
 
     onDataUpdated () {
-        this.updatePath();
+        // this.updatePath();
         this.logErrors();
     }
 
     updatePath () {
-        const getPath = (url) => {
-            const urlObject = new URL(url);
-            return urlObject.pathname + urlObject.search;
-        }
-
-        const currentPath = getPath(window.location.href);
-        const responsePath = getPath(this.data.serverMemo.path);
-
-        if (currentPath !== responsePath) {
-            window.history.replaceState({}, '', responsePath);
-        }
+        updatePathFromUrl(this.data.serverMemo.path);
     }
 
     logErrors () {
@@ -98,6 +88,10 @@ class Component {
             })
                 .then((response) => response.json())
                 .then(function (response) {
+                    if (response && response.path) {
+                        updatePathFromUrl(response.path);
+                    }
+
                     if (response && response.html) {
                         window.Alpine.morph($el, response.html);
                     }
@@ -130,12 +124,19 @@ class Component {
 class Livewire {
     constructor () {
         this.forceDataDirectiveToBody();
+        this.updatePath();
 
         document.addEventListener('alpine:init', () => {
             this.registerWireDirective();
             this.registerWireMacicProperty();
             this.validate();
         });
+    }
+
+    updatePath () {
+        if (window.LIVEWIRE_PATH) {
+            updatePathFromUrl(window.LIVEWIRE_PATH);
+        }
     }
 
     validate () {
@@ -199,3 +200,17 @@ class Livewire {
 }
 
 new Livewire();
+
+function getPathFromUrl(url) {
+    const urlObject = new URL(url);
+    return urlObject.pathname + urlObject.search;
+}
+
+function updatePathFromUrl(url) {
+    const currentPath = getPathFromUrl(window.location.href);
+    const newPath = getPathFromUrl(url);
+
+    if (currentPath !== newPath) {
+        window.history.replaceState({}, '', newPath);
+    }
+}

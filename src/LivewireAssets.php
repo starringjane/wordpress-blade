@@ -22,6 +22,8 @@ class LivewireAssets
 
     public function addWireScript()
     {
+        $path = LivewirePath::getInstance()->getPath();
+        echo "<script>window.LIVEWIRE_PATH = '$path'</script>";
         echo "<script>".file_get_contents(__DIR__ . '/dist/wire.js')."</script>";
     }
 }

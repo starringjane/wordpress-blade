@@ -13,8 +13,6 @@ abstract class LivewireComponent extends Component
 
     private $__wireErrors = [];
 
-    private $__wirePath = '';
-
     public function mount()
     {
     }
@@ -37,11 +35,6 @@ abstract class LivewireComponent extends Component
         // @click="$wire.refresh()"
     }
 
-    public function setInitalWirePath()
-    {
-        $this->__wirePath = Utils::getUrl();
-    }
-
     public function hydrateQueryParams()
     {
         if (empty($this->queryString)) {
@@ -59,6 +52,31 @@ abstract class LivewireComponent extends Component
         }
     }
 
+    public function updateLivewirePath(): void
+    {
+        if (empty($this->queryString)) {
+            return;
+        }
+
+        $path = LivewirePath::getInstance()->getPath();
+
+        foreach ($this->queryString as $key => $value) {
+            $property = is_string($value) ? $value : $key;
+            $options = is_array($value) ? $value : [];
+            $queryKey = isset($options['as']) ? $options['as'] : $property;
+
+            if (property_exists($this, $property)) {
+                if (isset($options['except']) && $this->{$property} == $options['except']) {
+                    $path = remove_query_arg($queryKey, $path);
+                } else {
+                    $path = add_query_arg($queryKey, $this->{$property}, $path);
+                }
+            }
+        }
+
+        LivewirePath::getInstance()->setPath($path);
+    }
+
     public function handleWireRequest($request)
     {
         try {
@@ -67,7 +85,7 @@ abstract class LivewireComponent extends Component
             }
 
             if (isset($request['path'])) {
-                $this->__wirePath = $request['path'];
+                LivewirePath::getInstance()->setPath($request['path']);
             }
 
             foreach ($this->extractWireProperties() as $property => $value) {
@@ -96,6 +114,7 @@ abstract class LivewireComponent extends Component
     {
         return [
             'html' => $this->toHtml(),
+            'path' => LivewirePath::getInstance()->getPath(),
         ];
     }
 
@@ -107,10 +126,10 @@ abstract class LivewireComponent extends Component
     {
         $this->mount();
         $this->boot();
-        $this->setInitalWirePath();
         $this->hydrateQueryParams();
         $this->mounted();
         $this->booted();
+        $this->updateLivewirePath();
 
         return parent::withName($name);
     }
@@ -143,31 +162,6 @@ abstract class LivewireComponent extends Component
         return $this->__wireErrors;
     }
 
-    protected function getWirePath()
-    {
-        $path = $this->__wirePath;
-
-        if (empty($this->queryString)) {
-            return $path;
-        }
-
-        foreach ($this->queryString as $key => $value) {
-            $property = is_string($value) ? $value : $key;
-            $options = is_array($value) ? $value : [];
-            $queryKey = isset($options['as']) ? $options['as'] : $property;
-
-            if (property_exists($this, $property)) {
-                if (isset($options['except']) && $this->{$property} == $options['except']) {
-                    $path = remove_query_arg($queryKey, $path);
-                } else {
-                    $path = add_query_arg($queryKey, $this->{$property}, $path);
-                }
-            }
-        }
-
-        return $path;
-    }
-
     protected function getWireData()
     {
         return json_encode([
@@ -176,7 +170,6 @@ abstract class LivewireComponent extends Component
                 'class' => $this->getWireClass(),
             ],
             'serverMemo' => [
-                'path' => $this->getWirePath(),
                 'errors' => $this->getWireErrors(),
                 'data' => $this->extractWireProperties(),
             ],

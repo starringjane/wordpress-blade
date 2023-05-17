@@ -41,6 +41,7 @@ class LivewireRestApi
         $component->boot();
         $component->handleWireRequest($request);
         $component->booted();
+        $component->updateLivewirePath();
 
         return new WP_REST_Response($component->toResponse(), 200);
     }

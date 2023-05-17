@@ -46,21 +46,13 @@ var Component = /*#__PURE__*/function () {
   }, {
     key: "onDataUpdated",
     value: function onDataUpdated() {
-      this.updatePath();
+      // this.updatePath();
       this.logErrors();
     }
   }, {
     key: "updatePath",
     value: function updatePath() {
-      var getPath = function getPath(url) {
-        var urlObject = new URL(url);
-        return urlObject.pathname + urlObject.search;
-      };
-      var currentPath = getPath(window.location.href);
-      var responsePath = getPath(this.data.serverMemo.path);
-      if (currentPath !== responsePath) {
-        window.history.replaceState({}, '', responsePath);
-      }
+      updatePathFromUrl(this.data.serverMemo.path);
     }
   }, {
     key: "logErrors",
@@ -116,6 +108,9 @@ var Component = /*#__PURE__*/function () {
         }).then(function (response) {
           return response.json();
         }).then(function (response) {
+          if (response && response.path) {
+            updatePathFromUrl(response.path);
+          }
           if (response && response.html) {
             window.Alpine.morph($el, response.html);
           }
@@ -152,6 +147,7 @@ var Livewire = /*#__PURE__*/function () {
     var _this2 = this;
     _classCallCheck(this, Livewire);
     this.forceDataDirectiveToBody();
+    this.updatePath();
     document.addEventListener('alpine:init', function () {
       _this2.registerWireDirective();
       _this2.registerWireMacicProperty();
@@ -159,6 +155,13 @@ var Livewire = /*#__PURE__*/function () {
     });
   }
   _createClass(Livewire, [{
+    key: "updatePath",
+    value: function updatePath() {
+      if (window.LIVEWIRE_PATH) {
+        updatePathFromUrl(window.LIVEWIRE_PATH);
+      }
+    }
+  }, {
     key: "validate",
     value: function validate() {
       setTimeout(function () {
@@ -222,5 +225,16 @@ var Livewire = /*#__PURE__*/function () {
   return Livewire;
 }();
 new Livewire();
+function getPathFromUrl(url) {
+  var urlObject = new URL(url);
+  return urlObject.pathname + urlObject.search;
+}
+function updatePathFromUrl(url) {
+  var currentPath = getPathFromUrl(window.location.href);
+  var newPath = getPathFromUrl(url);
+  if (currentPath !== newPath) {
+    window.history.replaceState({}, '', newPath);
+  }
+}
 /******/ })()
 ;
