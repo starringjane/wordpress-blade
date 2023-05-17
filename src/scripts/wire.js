@@ -3,25 +3,8 @@ const components = new Map();
 class Component {
     constructor (el) {
         this.el = el;
-
         this.updateId();
         this.updateData();
-        this.observe();
-    }
-
-    /**
-     * Updates the inital data when el changes
-     */
-    observe () {
-        this.observer = new MutationObserver((mutationList, observer) => {
-            for (const mutation of mutationList) {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'wire:data') {
-                    this.updateData();
-                }
-            }
-        });
-
-        this.observer.observe(this.el, { attributes: true, childList: false, subtree: false });
     }
 
     updateId () {
@@ -29,19 +12,19 @@ class Component {
     }
 
     updateData () {
-        if (!this.el.getAttribute('wire:data')) {
+        if (!this.el.getAttribute('x-wire-data')) {
             return;
         }
 
         this.data = this.data || window.Alpine.reactive({});
 
-        const data = JSON.parse(this.el.getAttribute('wire:data'));
+        const data = JSON.parse(this.el.getAttribute('x-wire-data'));
 
         Object.entries(data).forEach(([key, value]) => {
             this.data[key] = value;
         });
 
-        this.el.removeAttribute('wire:data');
+        this.el.removeAttribute('x-wire-data');
 
         this.logErrors();
     }
@@ -149,6 +132,14 @@ class Livewire {
 
             if (!components.has(id)) {
                 components.set(id, new Component(el));
+            }
+        })
+
+        window.Alpine.directive('wire-data', (el, { expression }) => {
+            const id = el.getAttribute('x-wire');
+
+            if (components.has(id)) {
+                components.get(id).updateData();
             }
         })
     }

@@ -107,7 +107,7 @@ abstract class LivewireComponent extends Component
     {
         $this->withAttributes([
             'x-wire' => $this->getWireId(),
-            'wire:data' => $this->getWireData(),
+            'x-wire-data' => $this->getWireData(),
         ]);
 
         return parent::view($view, $data, $mergeData);
