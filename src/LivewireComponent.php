@@ -23,6 +23,12 @@ abstract class LivewireComponent extends Component
     {
     }
 
+    public function refresh()
+    {
+        // Add refresh function just to update the view from $wire
+        // @click="$wire.refresh()"
+    }
+
     public function handleWireRequest($request)
     {
         try {
