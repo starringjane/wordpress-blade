@@ -8,19 +8,8 @@ abstract class LivewireComponent extends Component
 {
     public $id = false;
 
-    public function __construct($request = null, $initalMount = true)
+    public function mount()
     {
-        $this->boot();
-
-        if ($initalMount) {
-            $this->mount();
-        }
-
-        if ($request) {
-            $this->handleWireRequest($request);
-        }
-
-        $this->booted();
     }
 
     public function boot()
@@ -31,26 +20,35 @@ abstract class LivewireComponent extends Component
     {
     }
 
-    public function mount()
-    {
-    }
-
     public function handleWireRequest($request)
     {
-        if (isset($request->serverMemo->data)) {
-            foreach ($request->serverMemo->data as $key => $value) {
-                $this->{$key} = $value;
+        if (isset($request['serverMemo']['data'])) {
+            foreach ($request['serverMemo']['data'] as $property => $value) {
+                $this->{$property} = $value;
             }
         }
 
-        if (isset($request->call)) {
-            $method = $request->call->method;
-            $arguments = $request->call->arguments;
+        if (isset($request['call'])) {
+            $method = $request['call']['method'];
+            $arguments = $request['call']['arguments'];
 
             if (method_exists($this, $method)) {
                 $this->{$method}(...$arguments);
             }
         }
+    }
+
+    /**
+     * Using this function to call "mount" only once
+     * withName is only called in the initial request
+     */
+    public function withName($name)
+    {
+        $this->mount();
+        $this->boot();
+        $this->booted();
+
+        return parent::withName($name);
     }
 
     public function withAttributes(array $attributes)

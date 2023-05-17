@@ -37,18 +37,22 @@ class LivewireRestApi
         $request = $this->getRequest();
         $component = $this->getComponent($request);
 
+        $component->boot();
+        $component->handleWireRequest($request);
+        $component->booted();
+
         return new WP_REST_Response(['html' => (string) $component->render()], 200);
     }
 
     public function getRequest()
     {
-        return isset($_POST['json']) ? json_decode(str_replace('\"', '"', $_POST['json'])) : null;
+        return isset($_POST['json']) ? json_decode(str_replace('\"', '"', $_POST['json']), true) : null;
     }
 
     public function getComponent($request)
     {
-        $class = str_replace('\\\\', '\\', $request->fingerprint->class);
+        $class = str_replace('\\\\', '\\', $request['fingerprint']['class']);
 
-        return new $class($request, false);
+        return Application::getInstance()->make($class, (array) $request['serverMemo']['data']);
     }
 }
