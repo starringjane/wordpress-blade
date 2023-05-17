@@ -9,9 +9,9 @@ abstract class LivewireComponent extends Component
 {
     protected $queryString = [];
     
-    private $__wireId;
+    private $wireId;
 
-    private $__wireErrors = [];
+    private $wireErrors = [];
 
     public function mount()
     {
@@ -35,7 +35,7 @@ abstract class LivewireComponent extends Component
         // @click="$wire.refresh()"
     }
 
-    public function hydrateQueryParams()
+    public function wireHydrateQueryArguments()
     {
         if (empty($this->queryString)) {
             return;
@@ -54,7 +54,7 @@ abstract class LivewireComponent extends Component
         }
     }
 
-    public function updateLivewirePath(): void
+    public function wireDehydrateQueryArguments()
     {
         if (empty($this->queryString)) {
             return;
@@ -75,11 +75,11 @@ abstract class LivewireComponent extends Component
         }
     }
 
-    public function handleWireRequest($request)
+    public function wireHandleRequest($request)
     {
         try {
             if (isset($request['fingerprint']['id'])) {
-                $this->__wireId = $request['fingerprint']['id'];
+                $this->wireId = $request['fingerprint']['id'];
             }
 
             if (isset($request['path'])) {
@@ -99,7 +99,7 @@ abstract class LivewireComponent extends Component
                 $this->{$method}(...$arguments);
             }
         } catch (Throwable $e) {
-            $this->__wireErrors[] = $e->getMessage();
+            $this->wireErrors[] = $e->getMessage();
         }
     }
 
@@ -124,10 +124,10 @@ abstract class LivewireComponent extends Component
     {
         $this->mount();
         $this->boot();
-        $this->hydrateQueryParams();
+        $this->wireHydrateQueryArguments();
         $this->mounted();
         $this->booted();
-        $this->updateLivewirePath();
+        $this->wireDehydrateQueryArguments();
 
         return parent::withName($name);
     }
@@ -143,11 +143,11 @@ abstract class LivewireComponent extends Component
 
     protected function getWireId()
     {
-        if ($this->__wireId) {
-            return $this->__wireId;
+        if ($this->wireId) {
+            return $this->wireId;
         }
 
-        return $this->__wireId = Utils::randomString(40);
+        return $this->wireId = Utils::randomString(40);
     }
 
     protected function getWireClass()
@@ -157,7 +157,7 @@ abstract class LivewireComponent extends Component
 
     protected function getWireErrors()
     {
-        return $this->__wireErrors;
+        return $this->wireErrors;
     }
 
     protected function getWireData()

@@ -39,9 +39,9 @@ class LivewireRestApi
 
         $component = $this->getComponent($request);
         $component->boot();
-        $component->handleWireRequest($request);
+        $component->wireHandleRequest($request);
         $component->booted();
-        $component->updateLivewirePath();
+        $component->wireDehydrateQueryArguments();
 
         return new WP_REST_Response($component->toResponse(), 200);
     }
