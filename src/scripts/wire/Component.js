@@ -66,10 +66,16 @@ export class Component {
         return this.data.serverMemo.data[prop];
     }
 
+    hasPublicMethod (method) {
+        return this.data.serverMemo.methods.includes(method);
+    }
+
     call (method) {
         const $this = this;
 
         return function () {
+            $this.data.loading = method;
+
             const payload = {
                 fingerprint: $this.data.fingerprint,
                 serverMemo: $this.data.serverMemo,
@@ -100,10 +106,16 @@ export class Component {
     }
 
     get (prop) {
-        // Check of public property exists
+        // Check if public property exists
         // Example: x-text="$wire.count"
         if (this.hasPropertyValue(prop)) {
             return this.getPropertyValue(prop);
+        }
+
+        // Check if public method exists
+        // Example: @click="$wire.increaseCounter()"
+        if (this.hasPublicMethod(prop)) {
+            return this.call(prop);
         }
 
         // $refresh method call
@@ -118,9 +130,13 @@ export class Component {
             return this.call('dollarSet');
         }
 
-        // Asume method call
-        // Example: @click="$wire.increaseCounter()"
-        return this.call(prop);
+        // $loading property
+        // Example: @click="$wire.$loading"
+        if (prop === '$loading') {
+            return this.data.loading;
+        }
+
+        return null;
     }
 
     set (prop, value) {

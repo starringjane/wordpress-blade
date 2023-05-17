@@ -171,6 +171,7 @@ abstract class LivewireComponent extends Component
     protected function getWireData()
     {
         return json_encode([
+            'loading' => false,
             'fingerprint' => [
                 'id' => $this->getWireId(),
                 'class' => $this->getWireClass(),
@@ -178,9 +179,29 @@ abstract class LivewireComponent extends Component
             'serverMemo' => [
                 'errors' => $this->getWireErrors(),
                 'data' => $this->extractWireProperties(),
+                'methods' => $this->extractWireMethods(),
                 'serialized' => $this->extractSerializedWireProperties(),
             ],
         ]);
+    }
+
+    protected function extractWireMethods()
+    {
+        return collect($this->extractPublicMethods())
+            ->except([
+                'mount',
+                'mounted',
+                'boot',
+                'booted',
+                'wireHydrateQueryArguments',
+                'wireDehydrateQueryArguments',
+                'wireHandleRequest',
+                'fill',
+                'toHtml',
+                'toResponse',
+            ])
+            ->keys()
+            ->toArray();
     }
 
     protected function extractWireProperties()

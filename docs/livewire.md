@@ -232,6 +232,44 @@ class MyLivewireComponent extends LivewireComponent
 </div>
 ```
 
+## Loading state
+
+Sometimes you might want to show a loading state. Use the magic `$wire.$loading` property for this.
+
+```php
+// views/components/my-livewire-component.blade.php
+
+<div {{ $attributes }}>
+    <div x-data>
+        <button @click="$wire.calculate()">
+            Calculate
+        </button>
+
+        <div x-show="$wire.$loading">Please wait, result is loading</div>
+    </div>
+</div>
+```
+
+### Loading state for specific actions
+
+```php
+// views/components/my-livewire-component.blade.php
+
+<div {{ $attributes }}>
+    <div x-data>
+        <button @click="$wire.calculate()">
+            Calculate
+        </button>
+
+        <button @click="$wire.reset()">
+            Reset
+        </button>
+
+        <div x-show="$wire.$loading === 'calculate'">Calculating...</div>
+    </div>
+</div>
+```
+
 ## Lifecycle
 
 ```php
