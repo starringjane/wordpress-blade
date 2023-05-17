@@ -26,7 +26,26 @@ class Component {
 
         this.el.removeAttribute('x-wire-data');
 
+        this.onDataUpdated();
+    }
+
+    onDataUpdated () {
+        this.updatePath();
         this.logErrors();
+    }
+
+    updatePath () {
+        const getPath = (url) => {
+            const urlObject = new URL(url);
+            return urlObject.pathname + urlObject.search;
+        }
+
+        const currentPath = getPath(window.location.href);
+        const responsePath = getPath(this.data.serverMemo.path);
+
+        if (currentPath !== responsePath) {
+            window.history.replaceState({}, '', responsePath);
+        }
     }
 
     logErrors () {
@@ -65,6 +84,7 @@ class Component {
             const payload = {
                 fingerprint: $data.fingerprint,
                 serverMemo: $data.serverMemo,
+                path: window.location.href,
                 call: {
                     method: method,
                     arguments: [...arguments],
@@ -73,8 +93,8 @@ class Component {
 
             fetch('/wp-json/wire/v1/wire', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'json=' + encodeURI(JSON.stringify(payload)),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             })
                 .then((response) => response.json())
                 .then(function (response) {

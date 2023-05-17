@@ -2,6 +2,7 @@
 
 namespace StarringJane\WordpressBlade;
 
+use WP_REST_Request;
 use WP_REST_Response;
 
 class LivewireRestApi
@@ -32,21 +33,16 @@ class LivewireRestApi
         });
     }
 
-    public function onRequest()
+    public function onRequest(WP_REST_Request $request)
     {
-        $request = $this->getRequest();
-        $component = $this->getComponent($request);
+        $request = $request->get_json_params();
 
+        $component = $this->getComponent($request);
         $component->boot();
         $component->handleWireRequest($request);
         $component->booted();
 
-        return new WP_REST_Response(['html' => (string) $component->render()], 200);
-    }
-
-    public function getRequest()
-    {
-        return isset($_POST['json']) ? json_decode(str_replace('\"', '"', $_POST['json']), true) : null;
+        return new WP_REST_Response($component->toResponse(), 200);
     }
 
     public function getComponent($request)

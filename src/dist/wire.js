@@ -1,1 +1,226 @@
-(()=>{function e(e,r){return function(e){if(Array.isArray(e))return e}(e)||function(e,t){var r=null==e?null:"undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(null==r)return;var n,i,o=[],a=!0,u=!1;try{for(r=r.call(e);!(a=(n=r.next()).done)&&(o.push(n.value),!t||o.length!==t);a=!0);}catch(e){u=!0,i=e}finally{try{a||null==r.return||r.return()}finally{if(u)throw i}}return o}(e,r)||function(e,r){if(!e)return;if("string"==typeof e)return t(e,r);var n=Object.prototype.toString.call(e).slice(8,-1);"Object"===n&&e.constructor&&(n=e.constructor.name);if("Map"===n||"Set"===n)return Array.from(e);if("Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return t(e,r)}(e,r)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function t(e,t){(null==t||t>e.length)&&(t=e.length);for(var r=0,n=new Array(t);r<t;r++)n[r]=e[r];return n}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function n(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}function i(e,t,r){return t&&n(e.prototype,t),r&&n(e,r),Object.defineProperty(e,"prototype",{writable:!1}),e}var o=new Map,a=function(){function t(e){r(this,t),this.el=e,this.updateId(),this.updateData()}return i(t,[{key:"updateId",value:function(){this.id=this.el.getAttribute("x-wire")}},{key:"updateData",value:function(){var t=this;if(this.el.getAttribute("x-wire-data")){this.data=this.data||window.Alpine.reactive({});var r=JSON.parse(this.el.getAttribute("x-wire-data"));Object.entries(r).forEach((function(r){var n=e(r,2),i=n[0],o=n[1];t.data[i]=o})),this.el.removeAttribute("x-wire-data"),this.logErrors()}}},{key:"logErrors",value:function(){this.data.serverMemo.errors.forEach((function(e){console.error(e)}))}},{key:"$wire",get:function(){var e=this;return new Proxy({},{get:function(t,r){return e.get(r)},set:function(t,r,n){return e.set(r,n)}})}},{key:"hasPropertyValue",value:function(e){return e in this.data.serverMemo.data}},{key:"getPropertyValue",value:function(e){return this.data.serverMemo.data[e]}},{key:"call",value:function(e){var t=this.el,r=this.data;return function(){var n={fingerprint:r.fingerprint,serverMemo:r.serverMemo,call:{method:e,arguments:Array.prototype.slice.call(arguments)}};fetch("/wp-json/wire/v1/wire",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"json="+encodeURI(JSON.stringify(n))}).then((function(e){return e.json()})).then((function(e){e&&e.html&&window.Alpine.morph(t,e.html)}))}}},{key:"get",value:function(e){return this.hasPropertyValue(e)?this.getPropertyValue(e):this.call(e)}},{key:"set",value:function(e,t){return e in this.data.serverMemo.data&&(this.data.serverMemo.data[e]=t),!0}}]),t}();new(function(){function e(){var t=this;r(this,e),this.forceDataDirectiveToBody(),document.addEventListener("alpine:init",(function(){t.registerWireDirective(),t.registerWireMacicProperty(),t.validate()}))}return i(e,[{key:"validate",value:function(){setTimeout((function(){window.Alpine.morph||console.error('Plugin "morph" is not included. Find out more here: https://alpinejs.dev/plugins/morph')}),1)}},{key:"registerWireDirective",value:function(){window.Alpine.directive("wire",(function(e,t){var r=t.expression;o.has(r)||o.set(r,new a(e))})),window.Alpine.directive("wire-data",(function(e,t){t.expression;var r=e.getAttribute("x-wire");o.has(r)&&o.get(r).updateData()}))}},{key:"registerWireMacicProperty",value:function(){window.Alpine.magic("wire",(function(e){var t=e.closest("[x-wire]"),r=t.getAttribute("x-wire");return t?o.has(r)?o.get(r).$wire:(console.error('Alpine: Cannot reference "$wire" for Livewire component with id '.concat(r,".")),null):(console.error('Alpine: Cannot reference "$wire" outside a Livewire component.'),null)}))}},{key:"forceDataDirectiveToBody",value:function(){var e=this;document.body?document.body.hasAttribute("x-data")||document.body.setAttribute("x-data",""):setTimeout((function(){e.forceDataDirectiveToBody()}))}}]),e}())})();
+/******/ (() => { // webpackBootstrap
+var __webpack_exports__ = {};
+/*!*****************************!*\
+  !*** ./src/scripts/wire.js ***!
+  \*****************************/
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+var components = new Map();
+var Component = /*#__PURE__*/function () {
+  function Component(el) {
+    _classCallCheck(this, Component);
+    this.el = el;
+    this.updateId();
+    this.updateData();
+  }
+  _createClass(Component, [{
+    key: "updateId",
+    value: function updateId() {
+      this.id = this.el.getAttribute('x-wire');
+    }
+  }, {
+    key: "updateData",
+    value: function updateData() {
+      var _this = this;
+      if (!this.el.getAttribute('x-wire-data')) {
+        return;
+      }
+      this.data = this.data || window.Alpine.reactive({});
+      var data = JSON.parse(this.el.getAttribute('x-wire-data'));
+      Object.entries(data).forEach(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+          key = _ref2[0],
+          value = _ref2[1];
+        _this.data[key] = value;
+      });
+      this.el.removeAttribute('x-wire-data');
+      this.onDataUpdated();
+    }
+  }, {
+    key: "onDataUpdated",
+    value: function onDataUpdated() {
+      this.updatePath();
+      this.logErrors();
+    }
+  }, {
+    key: "updatePath",
+    value: function updatePath() {
+      var getPath = function getPath(url) {
+        var urlObject = new URL(url);
+        return urlObject.pathname + urlObject.search;
+      };
+      var currentPath = getPath(window.location.href);
+      var responsePath = getPath(this.data.serverMemo.path);
+      if (currentPath !== responsePath) {
+        window.history.replaceState({}, '', responsePath);
+      }
+    }
+  }, {
+    key: "logErrors",
+    value: function logErrors() {
+      this.data.serverMemo.errors.forEach(function (error) {
+        console.error(error);
+      });
+    }
+  }, {
+    key: "$wire",
+    get: function get() {
+      var $this = this;
+      return new Proxy({}, {
+        get: function get(_, prop) {
+          return $this.get(prop);
+        },
+        set: function set(_, prop, value) {
+          return $this.set(prop, value);
+        }
+      });
+    }
+  }, {
+    key: "hasPropertyValue",
+    value: function hasPropertyValue(prop) {
+      return prop in this.data.serverMemo.data;
+    }
+  }, {
+    key: "getPropertyValue",
+    value: function getPropertyValue(prop) {
+      return this.data.serverMemo.data[prop];
+    }
+  }, {
+    key: "call",
+    value: function call(method) {
+      var $el = this.el;
+      var $data = this.data;
+      return function () {
+        var payload = {
+          fingerprint: $data.fingerprint,
+          serverMemo: $data.serverMemo,
+          path: window.location.href,
+          call: {
+            method: method,
+            arguments: Array.prototype.slice.call(arguments)
+          }
+        };
+        fetch('/wp-json/wire/v1/wire', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        }).then(function (response) {
+          return response.json();
+        }).then(function (response) {
+          if (response && response.html) {
+            window.Alpine.morph($el, response.html);
+          }
+        });
+      };
+    }
+  }, {
+    key: "get",
+    value: function get(prop) {
+      // Check of public property exists
+      // Example: x-text="$wire.count"
+      if (this.hasPropertyValue(prop)) {
+        return this.getPropertyValue(prop);
+      }
+
+      // Asume method call
+      // Example: @click="$wire.increaseCounter()"
+      return this.call(prop);
+    }
+  }, {
+    key: "set",
+    value: function set(prop, value) {
+      if (prop in this.data.serverMemo.data) {
+        this.data.serverMemo.data[prop] = value;
+      }
+      return true;
+    }
+  }]);
+  return Component;
+}();
+;
+var Livewire = /*#__PURE__*/function () {
+  function Livewire() {
+    var _this2 = this;
+    _classCallCheck(this, Livewire);
+    this.forceDataDirectiveToBody();
+    document.addEventListener('alpine:init', function () {
+      _this2.registerWireDirective();
+      _this2.registerWireMacicProperty();
+      _this2.validate();
+    });
+  }
+  _createClass(Livewire, [{
+    key: "validate",
+    value: function validate() {
+      setTimeout(function () {
+        if (!window.Alpine.morph) {
+          console.error('Plugin "morph" is not included. Find out more here: https://alpinejs.dev/plugins/morph');
+        }
+      }, 1);
+    }
+  }, {
+    key: "registerWireDirective",
+    value: function registerWireDirective() {
+      window.Alpine.directive('wire', function (el, _ref3) {
+        var expression = _ref3.expression;
+        var id = expression;
+        if (!components.has(id)) {
+          components.set(id, new Component(el));
+        }
+      });
+      window.Alpine.directive('wire-data', function (el, _ref4) {
+        var expression = _ref4.expression;
+        var id = el.getAttribute('x-wire');
+        if (components.has(id)) {
+          components.get(id).updateData();
+        }
+      });
+    }
+  }, {
+    key: "registerWireMacicProperty",
+    value: function registerWireMacicProperty() {
+      window.Alpine.magic('wire', function (el) {
+        var wireEl = el.closest('[x-wire]');
+        var id = wireEl.getAttribute('x-wire');
+        if (!wireEl) {
+          console.error('Alpine: Cannot reference "$wire" outside a Livewire component.');
+          return null;
+        }
+        ;
+        if (!components.has(id)) {
+          console.error("Alpine: Cannot reference \"$wire\" for Livewire component with id ".concat(id, "."));
+          return null;
+        }
+        ;
+        return components.get(id).$wire;
+      });
+    }
+  }, {
+    key: "forceDataDirectiveToBody",
+    value: function forceDataDirectiveToBody() {
+      var _this3 = this;
+      if (!document.body) {
+        setTimeout(function () {
+          _this3.forceDataDirectiveToBody();
+        });
+        return;
+      }
+      if (!document.body.hasAttribute('x-data')) {
+        document.body.setAttribute('x-data', '');
+      }
+    }
+  }]);
+  return Livewire;
+}();
+new Livewire();
+/******/ })()
+;

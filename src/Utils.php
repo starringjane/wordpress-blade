@@ -90,4 +90,34 @@ class Utils
 
         return $string;
     }
+
+    public static function getUrl()
+    {
+        return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    }
+
+    public static function castToType($type, $value)
+    {
+        if ($type === 'boolean') {
+            return (bool) $value;
+        }
+
+        if ($type === 'integer') {
+            return (int) $value;
+        }
+
+        if ($type === 'double') {
+            return (double) $value;
+        }
+
+        if ($type === 'string') {
+            return (string) $value;
+        }
+
+        if ($type === 'array') {
+            return (array) $value;
+        }
+
+        return $value;
+    }
 }
