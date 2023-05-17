@@ -49,6 +49,6 @@ class LivewireRestApi
     {
         $class = str_replace('\\\\', '\\', $request->fingerprint->class);
 
-        return new $class($request);
+        return new $class($request, false);
     }
 }

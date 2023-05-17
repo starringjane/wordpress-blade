@@ -8,15 +8,11 @@ abstract class LivewireComponent extends Component
 {
     public $id = false;
 
-    public $initialAttributes = [];
-
-    public $initialFields = [];
-
-    public function __construct($request = null)
+    public function __construct($request = null, $initalMount = true)
     {
         $this->boot();
 
-        if ($request === null) {
+        if ($initalMount) {
             $this->mount();
         }
 
@@ -100,20 +96,10 @@ abstract class LivewireComponent extends Component
 
     protected function view($view = null, $data = [], $mergeData = [])
     {
-        if (!empty($this->initialAttributes)) {
-            $this->withAttributes((array) $this->initialAttributes);
-        }
-
         $this->withAttributes([
             'x-wire' => $this->getWireId(),
             'wire:data' => $this->getWireData(),
         ]);
-
-        if (!empty($this->initialFields)) {
-            $data = array_merge($data, [
-                'fields' => $this->initialFields,
-            ]);
-        }
 
         return parent::view($view, $data, $mergeData);
     }
