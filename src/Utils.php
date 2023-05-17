@@ -7,9 +7,16 @@ class Utils
     public static function getComponentsFromPath(string $dir)
     {
         return self::scanDirectoryRecursive($dir)
-            ->mapWithKeys(function ($file) use ($dir) {
-                return self::extractComponentFromFile($file, $dir);
+            ->map(function ($file) use ($dir) {
+                return self::extractComponentsFromFile($file, $dir);
             })
+            ->reduce(function ($carry, $item) {
+                foreach ($item as $name => $component) {
+                    $carry[$name] = $component;
+                }
+
+                return $carry;
+            }, collect())
             ->filter(function ($class) {
                 return $class;
             })
@@ -32,7 +39,7 @@ class Utils
         return $result;
     }
 
-    public static function extractComponentFromFile($file, $base)
+    public static function extractComponentsFromFile($file, $base)
     {
         $class = self::getClass($file);
         preg_match('/\/(.*).php/', str_replace($base, '', $file), $matches);
@@ -44,7 +51,10 @@ class Utils
         $name = $matches[1];
         $name = str_replace('/', '.', $name);
 
-        return [$name => $class];
+        return [
+            $name => $class,
+            kebab_case($name) => $class,
+        ];
     }
 
     public static function createDirectory($path) {
