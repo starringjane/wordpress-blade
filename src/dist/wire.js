@@ -21,6 +21,11 @@ var Component = /*#__PURE__*/function () {
     this.updateData();
   }
   _createClass(Component, [{
+    key: "getEl",
+    value: function getEl() {
+      return document.querySelector("[x-wire=\"".concat(this.id, "\"]")) || this.el;
+    }
+  }, {
     key: "updateId",
     value: function updateId() {
       this.id = this.el.getAttribute('x-wire');
@@ -29,30 +34,25 @@ var Component = /*#__PURE__*/function () {
     key: "updateData",
     value: function updateData() {
       var _this = this;
-      if (!this.el.getAttribute('x-wire-data')) {
+      var el = this.getEl();
+      if (!el.getAttribute('x-wire-data')) {
         return;
       }
       this.data = this.data || window.Alpine.reactive({});
-      var data = JSON.parse(this.el.getAttribute('x-wire-data'));
+      var data = JSON.parse(el.getAttribute('x-wire-data'));
       Object.entries(data).forEach(function (_ref) {
         var _ref2 = _slicedToArray(_ref, 2),
           key = _ref2[0],
           value = _ref2[1];
         _this.data[key] = value;
       });
-      this.el.removeAttribute('x-wire-data');
+      el.removeAttribute('x-wire-data');
       this.onDataUpdated();
     }
   }, {
     key: "onDataUpdated",
     value: function onDataUpdated() {
-      // this.updatePath();
       this.logErrors();
-    }
-  }, {
-    key: "updatePath",
-    value: function updatePath() {
-      updatePathFromUrl(this.data.serverMemo.path);
     }
   }, {
     key: "logErrors",
@@ -87,12 +87,11 @@ var Component = /*#__PURE__*/function () {
   }, {
     key: "call",
     value: function call(method) {
-      var $el = this.el;
-      var $data = this.data;
+      var $this = this;
       return function () {
         var payload = {
-          fingerprint: $data.fingerprint,
-          serverMemo: $data.serverMemo,
+          fingerprint: $this.data.fingerprint,
+          serverMemo: $this.data.serverMemo,
           path: window.location.href,
           call: {
             method: method,
@@ -112,7 +111,7 @@ var Component = /*#__PURE__*/function () {
             updatePathFromUrl(response.path);
           }
           if (response && response.html) {
-            window.Alpine.morph($el, response.html);
+            window.Alpine.morph($this.getEl(), response.html);
           }
         });
       };

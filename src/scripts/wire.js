@@ -7,35 +7,36 @@ class Component {
         this.updateData();
     }
 
+    getEl() {
+        return document.querySelector(`[x-wire="${this.id}"]`) || this.el;
+    }
+
     updateId () {
         this.id = this.el.getAttribute('x-wire');
     }
 
     updateData () {
-        if (!this.el.getAttribute('x-wire-data')) {
+        const el = this.getEl();
+
+        if (!el.getAttribute('x-wire-data')) {
             return;
         }
 
         this.data = this.data || window.Alpine.reactive({});
 
-        const data = JSON.parse(this.el.getAttribute('x-wire-data'));
+        const data = JSON.parse(el.getAttribute('x-wire-data'));
 
         Object.entries(data).forEach(([key, value]) => {
             this.data[key] = value;
         });
 
-        this.el.removeAttribute('x-wire-data');
+        el.removeAttribute('x-wire-data');
 
         this.onDataUpdated();
     }
 
     onDataUpdated () {
-        // this.updatePath();
         this.logErrors();
-    }
-
-    updatePath () {
-        updatePathFromUrl(this.data.serverMemo.path);
     }
 
     logErrors () {
@@ -67,13 +68,12 @@ class Component {
     }
 
     call (method) {
-        const $el = this.el;
-        const $data = this.data;
+        const $this = this;
 
         return function () {
             const payload = {
-                fingerprint: $data.fingerprint,
-                serverMemo: $data.serverMemo,
+                fingerprint: $this.data.fingerprint,
+                serverMemo: $this.data.serverMemo,
                 path: window.location.href,
                 call: {
                     method: method,
@@ -93,7 +93,7 @@ class Component {
                     }
 
                     if (response && response.html) {
-                        window.Alpine.morph($el, response.html);
+                        window.Alpine.morph($this.getEl(), response.html);
                     }
                 })
             ;
