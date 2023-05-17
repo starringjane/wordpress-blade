@@ -160,6 +160,11 @@ class Livewire {
 
             if (components.has(id)) {
                 components.get(id).updateData();
+
+                // Try a second time, because sometimes the directive was not loaded yet
+                setTimeout(() => {
+                    components.get(id).updateData();
+                }, 10);
             }
         })
     }
