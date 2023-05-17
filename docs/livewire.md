@@ -76,7 +76,7 @@ class MyLivewireComponent extends LivewireComponent
 ```php
 <html>
 <body>
-    <x-my-livewire-component />
+    @livewire('my-livewire-component')
 </body>
 </html>
 ```
@@ -131,9 +131,9 @@ class MyLivewireComponent extends LivewireComponent
 
 ## Private properties and model binding
 
-Use private properties for if data should not be available to the $wire attribute
+Use private properties for data that should not be available to the $wire attribute
 
-Only use public properties if you want to change or access it with the $wire attribute
+Only use public properties if you want to access it with the $wire attribute
 
 Public properties do not need to be added to the data of the render function
 
@@ -160,6 +160,11 @@ class MyLivewireComponent extends LivewireComponent
         ]);
     }
 
+    public function setPage(int $page): void
+    {
+        $this->page = $page;
+    }
+
     public function render(): View
     {
         return $this->view('components.my-livewire-component', [
@@ -178,7 +183,7 @@ class MyLivewireComponent extends LivewireComponent
 
         <select
             x-model="$wire.page"
-            @change="$wire.refresh()"
+            @change="$wire.setPage($wire.page)"
         >
             <option value="1">1</option>
             <option value="2">2</option>
@@ -191,7 +196,9 @@ class MyLivewireComponent extends LivewireComponent
 ## Passing data to the component
 
 ```php
-<x-my-livewire-component post-type="page" />
+@livewire('my-livewire-component', [
+    'postType' => 'page',
+])
 ```
 
 ```php
@@ -206,12 +213,7 @@ use StarringJane\WordpressBlade\LivewireComponent;
 
 class MyLivewireComponent extends LivewireComponent
 {
-    public string $postType;
-
-    public function __construct($postType)
-    {
-        $this->postType = $postType;
-    }
+    public string $postType = '';
 
     public function render(): View
     {
@@ -246,12 +248,17 @@ class MyLivewireComponent extends LivewireComponent
 {
     public function mount(): void
     {
-        // Runs only once when the component created
+        // Runs only once when the component is created, before the data is hydrated
     }
 
     public function boot(): void
     {
         // Runs on every request, before the data is hydrated
+    }
+
+    public function mounted(): void
+    {
+        // Runs only once when the component is created, after the data is hydrated
     }
 
     public function booted(): void
