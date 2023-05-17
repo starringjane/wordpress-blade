@@ -2,7 +2,7 @@
 
 ## Setup
 
-### Alpine Morph plugin
+### Via CDN
 
 Include the Alpine Morph plugin. More information can be found here: https://alpinejs.dev/plugins/morph
 
@@ -11,6 +11,20 @@ In WordPress you can enqueue the CDN version
 ```php
 wp_enqueue_script('alpine-morph', 'https://unpkg.com/@alpinejs/morph@3.x.x/dist/cdn.min.js');
 wp_enqueue_script('alpine', 'https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js');
+```
+
+### Via NPM
+
+```js
+import Alpine from 'alpinejs';
+import morph from '@alpinejs/morph';
+
+window.Alpine = Alpine;
+
+Alpine.plugin(morph);
+Alpine.plugin(window.LivewireAlpine);
+
+Alpine.start();
 ```
 
 ### Register the package

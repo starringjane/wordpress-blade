@@ -4,15 +4,17 @@ import { updatePathFromUrl } from "./utils.js";
 
 export class Livewire {
     constructor () {
+        this.registered = false;
         this.components = new Map();
         this.forceDataDirectiveToBody();
         this.updatePath();
 
         if (window.Alpine) {
-            this.register();   
+            this.register(window.Alpine);   
         } else {
+            this.registerPlugin();
             document.addEventListener('alpine:init', () => {
-                this.register();
+                this.register(window.Alpine);
             });
         }
     }
@@ -21,11 +23,23 @@ export class Livewire {
         return new Livewire();
     }
 
-    register () {
-        this.registerWireDirective();
-        this.registerWireDataDirective();
-        this.registerWireMacicProperty();
-        this.validate();
+    registerPlugin () {
+        window.LivewireAlpine = (Alpine) => {
+            this.register(Alpine);
+        }
+    }
+
+    register (Alpine) {
+        if (this.registered) {
+            return;
+        }
+
+        this.registered = true;
+
+        this.registerWireDirective(Alpine);
+        this.registerWireDataDirective(Alpine);
+        this.registerWireMacicProperty(Alpine);
+        this.validate(Alpine);
     }
 
     updatePath () {
@@ -34,9 +48,9 @@ export class Livewire {
         }
     }
 
-    validate () {
+    validate (Alpine) {
         setTimeout(() => {
-            if (!window.Alpine.morph) {
+            if (!Alpine.morph) {
                 console.error('Plugin "morph" is not included. Find out more here: https://alpinejs.dev/plugins/morph');
             }
         }, 1);
@@ -48,15 +62,15 @@ export class Livewire {
         }
     }
 
-    registerWireDirective () {
-        window.Alpine.directive('wire', (el, { expression }) => {
+    registerWireDirective (Alpine) {
+        Alpine.directive('wire', (el, { expression }) => {
             const id = expression;
             this.createComponent(id, el);
         });
     }
 
-    registerWireDataDirective () {
-        window.Alpine.directive('wire-data', (el) => {
+    registerWireDataDirective (Alpine) {
+        Alpine.directive('wire-data', (el) => {
             const updateData = () => {
                 const id = el.getAttribute('x-wire');
 
@@ -76,8 +90,8 @@ export class Livewire {
         });
     }
 
-    registerWireMacicProperty () {
-        window.Alpine.magic('wire', (el) => {
+    registerWireMacicProperty (Alpine) {
+        Alpine.magic('wire', (el) => {
             if (el.__$wire) {
                 return el.__$wire;
             }
