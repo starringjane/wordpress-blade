@@ -103,10 +103,7 @@ class WordpressBlade extends Blade
 
     protected function clearCacheOnComponentChange($componentPath, $cachePath)
     {
-        $tmpPath = realpath(__DIR__ . '/../tmp');
-        $componentHashFile = $tmpPath . '/components.txt';
-
-        Utils::createDirectory($tmpPath);
+        $componentHashFile = $cachePath . '/components.cache';
 
         $hash = collect((array) $componentPath)->map(function ($path) {
             return Utils::scanDirectoryRecursive($path)->map(function ($file) {
