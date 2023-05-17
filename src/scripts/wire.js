@@ -4,7 +4,6 @@ class Component {
     constructor (el) {
         this.el = el;
         this.updateId();
-        this.updateData();
     }
 
     getEl() {

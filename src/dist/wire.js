@@ -18,7 +18,6 @@ var Component = /*#__PURE__*/function () {
     _classCallCheck(this, Component);
     this.el = el;
     this.updateId();
-    this.updateData();
   }
   _createClass(Component, [{
     key: "getEl",
