@@ -30,9 +30,9 @@ class LivewireBladeDirective
 
         $component = Application::getInstance()->make($componentClassName);
 
-        $component->fill($data);
         $component->mount();
         $component->boot();
+        $component->fill($data);
         $component->wireHydrateQueryArguments();
         $component->mounted();
         $component->booted();
