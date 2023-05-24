@@ -8,19 +8,26 @@ export class Livewire {
         this.components = new Map();
         this.forceDataDirectiveToBody();
         this.updatePath();
+        this.registerPlugin();
 
         if (window.Alpine) {
             this.register(window.Alpine);   
         } else {
-            this.registerPlugin();
             document.addEventListener('alpine:init', () => {
                 this.register(window.Alpine);
             });
         }
+
+        this.done();
     }
 
     static create () {
         return new Livewire();
+    }
+
+    done () {
+        // Dispatch init event to install the livewire alpine plugin
+        document.dispatchEvent(new Event('livewire:alpine:init'));
     }
 
     registerPlugin () {

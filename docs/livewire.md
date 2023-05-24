@@ -21,10 +21,18 @@ import morph from '@alpinejs/morph';
 
 window.Alpine = Alpine;
 
-Alpine.plugin(morph);
-Alpine.plugin(window.LivewireAlpine);
+const start = () => {
+    Alpine.plugin(morph);
+    Alpine.plugin(window.LivewireAlpine);
 
-Alpine.start();
+    Alpine.start();
+};
+
+if (window.LivewireAlpine) {
+    start();
+} else {
+    document.addEventListener('livewire:alpine:init', start);
+}
 ```
 
 ### Register the package
