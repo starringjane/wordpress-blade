@@ -332,3 +332,34 @@ class MyLivewireComponent extends LivewireComponent
     }
 }
 ```
+
+## Query String
+
+Sometimes it's useful to update the browser's query string when your component state changes.
+
+Warning! Avoid reserved terms by WordPress as they may conflict with core functionality. See [https://codex.wordpress.org/Reserved_Terms](https://codex.wordpress.org/Reserved_Terms).
+
+```php
+// themes/theme-name/components/my-livewire-component.php
+
+<?php
+
+namespace ThemeName\Components;
+
+use Illuminate\View\View;
+use StarringJane\WordpressBlade\LivewireComponent;
+
+class MyLivewireComponent extends LivewireComponent
+{
+    public string $keywords = '';
+
+    protected $queryString = ['keywords' => ['except' => '']];
+
+    public function render(): View
+    {
+        return $this->view('components.my-livewire-component', [
+            'posts' => $this->getPostsByKeywords($this->keywords),
+        ]);
+    }
+}
+```
