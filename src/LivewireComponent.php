@@ -2,6 +2,7 @@
 
 namespace StarringJane\WordpressBlade;
 
+use Exception;
 use StarringJane\WordpressBlade\Component;
 use Throwable;
 
@@ -60,6 +61,10 @@ abstract class LivewireComponent extends Component
             $property = is_string($value) ? $value : $key;
             $options = is_array($value) ? $value : [];
             $queryKey = isset($options['as']) ? $options['as'] : $property;
+
+            if (WordPressUtils::isReservedQueryVar($queryKey)) {
+                throw new Exception("Argument '$queryKey' can not be used as query argument because it is reserved by WordPress");
+            }
 
             if (isset($queryArguments[$queryKey]) && property_exists($this, $property)) {
                 $this->{$property} = Utils::castToType(gettype($this->{$property}), $queryArguments[$queryKey]);
