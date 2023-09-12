@@ -193,6 +193,24 @@ class Button extends Component
 
 ```
 
+## Custom directives
+
+The following example creates a @datetime($var) directive which formats a given $var
+
+```php
+<?php
+
+use StarringJane\WordpressBlade\WordpressBlade;
+
+add_action('after_setup_theme', function () {
+    WordpressBlade::getInstance()
+        ->directive('datetime', function ($expression) {
+            return "<?php echo ($expression)->format('m/d/Y H:i'); ?>";
+        })
+    ;
+});
+```
+
 ## Filters
 
 ### Add page template directories
