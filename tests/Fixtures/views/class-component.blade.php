@@ -1,1 +1,1 @@
-<x-navigation type="primary"></x-navigation>
+<x-header-navigation type="primary"></x-header-navigation>

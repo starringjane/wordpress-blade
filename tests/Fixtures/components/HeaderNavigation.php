@@ -4,7 +4,7 @@ namespace ThemeName\Components;
 
 use StarringJane\WordpressBlade\Component;
 
-class Navigation extends Component
+class HeaderNavigation extends Component
 {
     public $type;
 
