@@ -144,7 +144,11 @@ class Blade implements FactoryContract
 
     public function __call(string $method, array $params)
     {
-        return call_user_func_array([$this->factory, $method], $params);
+        if (method_exists($this->factory, $method)) {
+            return call_user_func_array([$this->factory, $method], $params);
+        }
+
+        return call_user_func_array([$this->compiler, $method], $params);
     }
 
     protected function setupContainer(array $viewPaths, string $cachePath)
