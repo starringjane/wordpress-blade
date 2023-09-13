@@ -3,9 +3,8 @@
 namespace StarringJane\WordpressBlade;
 
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Foundation\Application as ApplicationInterface;
 
-class Application extends Container implements ApplicationInterface {
+class Application extends Container {
     public function version()
     {
         return '';
@@ -41,9 +40,9 @@ class Application extends Container implements ApplicationInterface {
         return '';
     }
 
-    public function storagePath()
+    public function storagePath($path = '')
     {
-        return '';
+        return $path;
     }
 
     public function environment(...$environments)
@@ -192,6 +191,16 @@ class Application extends Container implements ApplicationInterface {
     }
 
     public function terminate()
+    {
+        //
+    }
+
+    public function maintenanceMode()
+    {
+        //
+    }
+
+    public function terminating($callback)
     {
         //
     }

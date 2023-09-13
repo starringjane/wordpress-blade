@@ -8,7 +8,7 @@ abstract class Component extends BaseComponent
 {
     use RendersBlade;
 
-    protected function view($view = null, $data = [], $mergeData = [])
+    public function view($view = null, $data = [], $mergeData = [])
     {
         $data = array_merge($data, $this->data());
 
