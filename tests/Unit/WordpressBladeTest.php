@@ -36,4 +36,19 @@ final class WordpressBladeTest extends TestCase
 
         $this->assertViewEqualsHtml($view, $output);
     }
+
+    public function test_it_can_register_directives(): void
+    {
+        WordpressBlade::getInstance()
+            ->directive('datetimeforeu', function ($expression) {
+                return "<?php echo ($expression)->format('d/m/Y H:i'); ?>";
+            })
+        ;
+        WordpressBlade::directive('datetimeforus', function ($expression) {
+            return "<?php echo ($expression)->format('m/d/Y H:i'); ?>";
+        });
+
+        $this->assertArrayHasKey('datetimeforeu', WordpressBlade::getCustomDirectives());
+        $this->assertArrayHasKey('datetimeforus', WordpressBlade::getCustomDirectives());
+    }
 }

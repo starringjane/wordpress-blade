@@ -133,7 +133,7 @@ Now you can access the `$post` variable in `views/pages/default.blade.php`
 @section('content')
     <h1>{{ $post->post_title }}</h1>
     <div>{!! $post->post_content !!}<div>
-@stop
+@endsection
 ```
 
 ## Components
@@ -203,11 +203,9 @@ The following example creates a @datetime($var) directive which formats a given 
 use StarringJane\WordpressBlade\WordpressBlade;
 
 add_action('after_setup_theme', function () {
-    WordpressBlade::getInstance()
-        ->directive('datetime', function ($expression) {
-            return "<?php echo ($expression)->format('m/d/Y H:i'); ?>";
-        })
-    ;
+    WordpressBlade::directive('datetime', function ($expression) {
+        return "<?php echo ($expression)->format('m/d/Y H:i'); ?>";
+    });
 });
 ```
 

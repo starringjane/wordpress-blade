@@ -74,35 +74,6 @@ class Blade implements FactoryContract
         return $this->compiler;
     }
 
-    public function directive(string $name, callable $handler)
-    {
-        $this->compiler->directive($name, $handler);
-    }
-    
-    public function if($name, callable $callback)
-    {
-        $this->compiler->if($name, $callback);
-    }
-
-    public function components(array $components, string $prefix = '')
-    {
-        $compiler = $this->compiler();
-
-        // Only supported in illuminate/view 7 or higher
-        if (method_exists($compiler, 'components')) {
-            $compiler->components($components, $prefix);
-        }
-
-        return $this;
-    }
-
-    public function component(string $class, string $alias = null, string $prefix = '')
-    {
-        $this->compiler()->component($class, $alias, $prefix);
-
-        return $this;
-    }
-
     public function exists($view): bool
     {
         return $this->factory->exists($view);
