@@ -151,6 +151,11 @@ class Blade implements FactoryContract
         return call_user_func_array([$this->compiler, $method], $params);
     }
 
+    public static function __callStatic(string $method, array $params)
+    {
+        return call_user_func_array([static::getInstance(), $method], $params);
+    }
+
     protected function setupContainer(array $viewPaths, string $cachePath)
     {
         $this->container = Application::getInstance();
