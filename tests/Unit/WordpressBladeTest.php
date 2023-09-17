@@ -15,7 +15,7 @@ final class WordpressBladeTest extends TestCase
             realpath(__DIR__ . '/../Fixtures/views'),
             realpath(__DIR__ . '/../Fixtures/cache'),
             realpath(__DIR__ . '/../Fixtures/components'),
-        );
+        )->clearCache();
     }
 
     static public function blade_files(): array

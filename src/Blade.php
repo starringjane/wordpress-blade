@@ -47,7 +47,7 @@ class Blade implements FactoryContract
 
         if ($componentPath) {
             $this->componentPath($componentPath);
-            $this->clearCacheOnComponentChange($componentPath, $cachePath);
+            $this->clearCacheOnComponentChange($componentPath);
         }
     }
 
@@ -185,9 +185,9 @@ class Blade implements FactoryContract
         return $this;
     }
 
-    protected function clearCacheOnComponentChange($componentPath, $cachePath)
+    protected function clearCacheOnComponentChange($componentPath)
     {
-        $componentHashFile = $cachePath . '/components.cache';
+        $componentHashFile = $this->getCachePath() . '/components.cache';
 
         $hash = collect((array) $componentPath)->map(function ($path) {
             return Utils::scanDirectoryRecursive($path)->map(function ($file) {
@@ -200,15 +200,20 @@ class Blade implements FactoryContract
             : null;
 
         if ($hash !== $oldHash) {
-            $this->clearCache($cachePath);
+            $this->clearCache();
         }
 
         file_put_contents($componentHashFile, $hash);
     }
 
-    protected function clearCache($cachePath)
+    public function getCachePath()
     {
-        Utils::scanDirectoryRecursive($cachePath)->each(function ($file) {
+        return $this->container->get('config')->get('view.compiled');
+    }
+
+    public function clearCache()
+    {
+        Utils::scanDirectoryRecursive($this->getCachePath())->each(function ($file) {
             if (str_ends_with($file, '.php')) {
                 unlink($file);
             }
