@@ -11,7 +11,9 @@ use StarringJane\WordpressBlade\Utils;
 use Illuminate\View\ViewServiceProvider;
 use Illuminate\View\Compilers\BladeCompiler;
 use StarringJane\WordpressBlade\Application;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\View\Factory as FactoryContract;
+use Illuminate\Contracts\Foundation\Application as FoundationApplication;
 
 class Blade implements FactoryContract
 {
