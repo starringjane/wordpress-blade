@@ -28,12 +28,14 @@ class Utils
     {
         $result = collect([]);
 
-        foreach ((new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir))) as $file) {
-            if ($file->isDir()) {
-                continue;
+        if (is_dir($dir)) {
+            foreach ((new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir))) as $file) {
+                if ($file->isDir()) {
+                    continue;
+                }
+    
+                $result->push($file->getPathname());
             }
-
-            $result->push($file->getPathname());
         }
 
         return $result;
