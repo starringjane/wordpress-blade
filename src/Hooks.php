@@ -40,7 +40,7 @@ class Hooks
         try {
             $view = $component->render();
 
-            if (method_exists($view, 'toHtml')) {
+            if (is_object($view) && method_exists($view, 'toHtml')) {
                 echo $view->toHtml();
             } else {
                 echo $view;
