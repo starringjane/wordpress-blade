@@ -1,4 +1,4 @@
-# Wordpress blade
+# WordPress Blade
 
 Adds the Laravel Blade template engine to WordPress
 
